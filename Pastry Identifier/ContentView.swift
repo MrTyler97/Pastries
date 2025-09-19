@@ -19,8 +19,8 @@ struct ContentView: View {
     
     func classifyImage() {
         
-        // Initialize model 
-        let model = try PastryIdentifier(configuration: MLModelConfiguration())
+        // Initialize model
+//        let model = try PastryIdentifier(configuration: MLModelConfiguration())
     }
     
     var body: some View {
