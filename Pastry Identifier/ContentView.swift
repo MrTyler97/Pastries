@@ -49,17 +49,17 @@ struct ContentView: View {
                 //
                 DispatchQueue.main.async{
                     // Logic for classification diplayed
-                    if topResult.confidence > 0.80{
+                    if topResult.identifier == "Other"{
+                        self.imageName = "Not Applicable"
+                        self.note = "This image does not fall within the classification types"
+                    }
+                    else if topResult.confidence > 0.90{
                         self.imageName = topResult.identifier
                         self.note = "High Confidence "
                     }
-                    else if topResult.confidence > 0.60 && topResult.confidence < 0.80{
+                    else if topResult.confidence > 0.60 && topResult.confidence < 0.90{
                         self.imageName = topResult.identifier
                         self.note = "Low Confidence, item may be misclassified"
-                    }
-                    else if topResult.identifier == "Other"{
-                        self.imageName = "Not Applicable"
-                        self.note = "This image does not fall within the classification types"
                     }
                     else {
                         self.imageName = "Unclassified"
@@ -74,36 +74,7 @@ struct ContentView: View {
             print("Error")
         }
     }
-    
-    // Sheet component view
-    struct SheetCompnent: View {
-        let imageName: String
-        let note: String
-        
-        var body: some View{
-            VStack{
-                // Place holder for asset image of item
-                Text("Placeholder")
-                    .foregroundStyle(.secondary)
-                    .padding()
-                    .frame(width: 200, height: 200)
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(30)
-                    .padding()
-                // Heading for name of item (pullled from assets)
-                Text(imageName)
-                    .font(.headline)
-                Text(note)
-                // Information and history of item (pulled from assets
-                Text("Information")
-                    .padding()
-                // Nutrition component for item. (api call)
-                Text("Placeholder for nutrition component")
-            }
-        }
-        
-    }
-    
+    // Main
     var body: some View {
         VStack {
             Spacer()
@@ -112,8 +83,9 @@ struct ContentView: View {
                 Image(uiImage: selectedImage)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 300, height: 300)
+                    .frame(height: 300)
                     .cornerRadius(30)
+                    .shadow(radius: 15)
                     .padding()
             } else {
                 // Place holder area if no image
@@ -140,7 +112,7 @@ struct ContentView: View {
                         .cornerRadius(30)
                 }
                         .sheet(isPresented: $showingSheet){
-                            SheetCompnent(imageName: imageName, note: note)
+                            SheetComponent(imageName: imageName, note: note)
                             // Allows sheet to load halfway intially with the option to enlarge
                                 .presentationDetents([.medium, .large])
                         }
