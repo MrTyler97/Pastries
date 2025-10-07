@@ -32,14 +32,16 @@ struct SheetComponent: View {
             if let pastry = pastry{ //unwrap 
                 Text("Origin: \(pastry.origin)")
                     .padding()
-                Section{
                     Text("Description: \(pastry.description)")
                         .padding()
                         .multilineTextAlignment(.center)
-                }
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(30)
+                        .frame(width: 350)
+                // Nutrition component for item. (api call)
+                Text("Placeholder for nutrition component")
+                    .padding()
             }
-            // Nutrition component for item. (api call)
-            Text("Placeholder for nutrition component")
         }
     }
     
