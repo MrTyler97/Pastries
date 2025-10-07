@@ -11,6 +11,7 @@ import SwiftUI
 struct SheetComponent: View {
     let imageName: String
     let note: String
+    let pastry: Pastry?
     
     var body: some View{
         VStack(){
@@ -26,13 +27,22 @@ struct SheetComponent: View {
                 .font(.headline)
             Text(note)
                 .font(.system(size: 8.0))
-                //.baselineOffset(6.0)
+                .baselineOffset(6.0)
             // Information and history of item (pulled from assets
-            Text("Information")
-                .padding()
+            if let pastry = pastry{ //unwrap 
+                Text("Origin: \(pastry.origin)")
+                    .padding()
+                Section{
+                    Text("Description: \(pastry.description)")
+                        .padding()
+                        .multilineTextAlignment(.center)
+                }
+            }
             // Nutrition component for item. (api call)
             Text("Placeholder for nutrition component")
         }
     }
     
 }
+
+
