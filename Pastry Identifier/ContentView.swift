@@ -17,6 +17,7 @@ struct Pastry {
     var description: String
 }
 // Create pastry data
+// Add allergens to object
 var pastries: [Pastry] = [
     Pastry(name: "Croissant", origin: "France", description: "A buttery flaky bread named for its distinctive crescent shape. Croissants are made of a leavened variant of puff pastry. The yeast dough is layered with butter, rolled and folded several times in succession, then rolled into a sheet, a technique called laminating. Croissants have long been a staple of French bakeries and pâtisseries."),
     Pastry(name: "Cookie", origin: "Persia", description: "A small sweet, crispy or cake like pastry most often made with flour, sugar, liquid and fat. Persia was among the first regions to cultivate sugar cane, making cakes and pastries a well known delicacy within the Persian Empire (Modern-day Iran)."),
@@ -55,7 +56,7 @@ struct ContentView: View {
         do{
             let config = MLModelConfiguration()
             // Initialize model
-            let model = try Pastry_SelectorV5_1(configuration: config)
+            let model = try Pastry_SelectorV5_2(configuration: config)
             // Initialize vision model
             let visionModel = try VNCoreMLModel(for: model.model)
             // Create a request and run model within
@@ -100,6 +101,12 @@ struct ContentView: View {
     var body: some View {
         VStack {
             Spacer()
+            // Title
+            Text("Pastries")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .foregroundColor(.brown)
+                .padding()
             // Diplay Image
             if let selectedImage = selectedImage {
                 Image(uiImage: selectedImage)
@@ -148,7 +155,7 @@ struct ContentView: View {
                     .foregroundStyle(Color(.brown))
                     .padding()
                     .frame(width: 300)
-                    .background(Color.brown.opacity(0.1))
+                    .background(Color.brown.gradient.opacity(0.1))
                     .cornerRadius(30)
             }
             // A sheet in SwiftUI is a view that pops up over your current interface to present additional content or functionality. In this case the camera screen.
@@ -162,7 +169,7 @@ struct ContentView: View {
                     .foregroundStyle(Color(.white).opacity(0.8))
                     .padding()
                     .frame(width: 300)
-                    .background(Color.brown)
+                    .background(Color.brown.gradient)
                     .cornerRadius(30)
             }
             .onChange(of: selectedItem) { olditem, newitem in
