@@ -74,39 +74,69 @@ struct SheetComponent: View {
                         .frame(maxWidth: 350)
                     }
                 }
-            }
-            Spacer()
-            Spacer()
-            // Place holder for asset image of item
-            Image("\(imageName)")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 200)
-                .cornerRadius(30)
-                .shadow(radius: 15)
-                .padding()
-            // Heading for name of item (pullled from assets)
-            Button(action: {
-                classificationDisclaimer.toggle()
-            }){
-                HStack{
-                    Text(imageName)
-                        .font(.headline)
-                        .foregroundStyle(.black)
-                    Image(systemName: "info.circle.fill")
-                        .foregroundStyle(.brown)
+                Spacer()
+                Spacer()
+                // Place holder for asset image of item
+                Image("\(imageName)")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 200)
+                    .cornerRadius(30)
+                    .shadow(radius: 15)
+                    .padding()
+                // Heading for name of item (pullled from assets)
+                Button(action: {
+                    classificationDisclaimer.toggle()
+                }){
+                    HStack{
+                        Text(imageName)
+                            .font(.headline)
+                            .foregroundStyle(.brown)
+                        Image(systemName: "info.circle.fill")
+                            .foregroundStyle(.brown)
+                    }
                 }
+                .alert("Disclaimer",isPresented: $classificationDisclaimer){
+                    Button("I Understand"){}
+                } message: {
+                    Text("This model may produce inaccurate results. Please verify findings independently and use with appropriate caution.")
+                }
+                //Confidence text
+                Text(note)
+                    .font(.system(size: 10.0))
+                    .foregroundStyle(.secondary)
+                Spacer()
+            } else {
+                Spacer()
+                Image(systemName: "xmark")
+                    .foregroundStyle(.secondary)
+                    .padding()
+                    .frame(width: 200, height: 200)
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(30)
+                    .padding()
+                Button(action: {
+                    classificationDisclaimer.toggle()
+                }){
+                    HStack{
+                        Text(imageName)
+                            .font(.headline)
+                            .foregroundStyle(.black)
+                        Image(systemName: "info.circle.fill")
+                            .foregroundStyle(.brown)
+                    }
+                }
+                .alert("Disclaimer",isPresented: $classificationDisclaimer){
+                    Button("I Understand"){}
+                } message: {
+                    Text("This model may produce inaccurate results. Please verify findings independently and use with appropriate caution.")
+                }
+                //Confidence text
+                Text(note)
+                    .font(.system(size: 10.0))
+                    .foregroundStyle(.secondary)
+                Spacer()
             }
-            .alert("Disclaimer",isPresented: $classificationDisclaimer){
-                Button("I Understand"){}
-            } message: {
-                Text("This model may produce inaccurate results. Please verify findings independently and use with appropriate caution.")
-            }
-            //Confidence text
-            Text(note)
-                .font(.system(size: 10.0))
-                .foregroundStyle(.secondary)
-            Spacer()
             // Information and history of item (pulled from assets
             if let pastry = pastry{ //unwrap 
                 Text("\(pastry.origin)")
