@@ -15,6 +15,42 @@ struct SheetComponent: View {
     
     var body: some View{
         VStack(){
+            if pastry != nil{
+                Spacer()
+                HStack{
+                    // Maps component
+                    Button(action: {
+                      // Add code
+                    }){
+                        HStack{
+                            Text("Find")
+                            Image(systemName: "location.fill")
+                        }
+                        .padding()
+                        .font(.subheadline)
+                        .foregroundStyle(.primary)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(20)
+                        .frame(maxWidth: 350)
+                    }
+                    // Nutrition component for item (api call)
+                    Button(action: {
+                      // Add code
+                    }){
+                        HStack{
+                            Text("Nutrition")
+                            Image(systemName: "list.bullet.rectangle.portrait")
+                        }
+                        .padding()
+                        .font(.subheadline)
+                        .foregroundStyle(.orange)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(20)
+                        .frame(maxWidth: 350)
+                    }
+                }
+            }
+            Spacer()
             // Place holder for asset image of item
             Text("Placeholder")
                 .foregroundStyle(.secondary)
@@ -26,25 +62,33 @@ struct SheetComponent: View {
             Text(imageName)
                 .font(.headline)
             Text(note)
-                .font(.system(size: 8.0))
-                .baselineOffset(6.0)
+                .font(.system(size: 10.0))
+                .foregroundStyle(.secondary)
+            Spacer()
             // Information and history of item (pulled from assets
             if let pastry = pastry{ //unwrap 
-                Text("Origin: \(pastry.origin)")
+                Text("\(pastry.origin)")
                     .padding()
-                    Text("Description: \(pastry.description)")
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(20)
+                    .frame(maxWidth: 350)
+                Text("Origin")
+                    .font(.system(size: 10.0))
+                    .foregroundStyle(.secondary)
+            Spacer()
+                Text("\(pastry.description)")
                         .padding()
                         .multilineTextAlignment(.center)
                         .background(.ultraThinMaterial)
                         .cornerRadius(30)
                         .frame(width: 350)
-                // Nutrition component for item. (api call)
-                Text("Placeholder for nutrition component")
-                    .padding()
+                Text("Description")
+                    .font(.system(size: 10.0))
+                    .foregroundStyle(.secondary)
+                Spacer()
+            }
             }
         }
     }
-    
-}
 
 

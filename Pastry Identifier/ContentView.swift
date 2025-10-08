@@ -19,8 +19,8 @@ struct Pastry {
 // Create pastry data
 var pastries: [Pastry] = [
     Pastry(name: "Croissant", origin: "France", description: "A buttery flaky bread named for its distinctive crescent shape. Croissants are made of a leavened variant of puff pastry. The yeast dough is layered with butter, rolled and folded several times in succession, then rolled into a sheet, a technique called laminating. Croissants have long been a staple of French bakeries and pâtisseries."),
-    Pastry(name: "Cookie", origin: "Persia (Iran)", description: " A cookie is a small sweet, crispy or cake-like pastry most often made with flour, sugar, liquid and fat. Persia were one of the first countries where sugar cane was grown and harvested. Cakes and pastries were a well-known treat within the Persian Empire."),
-    Pastry(name: "Kouign Amann", origin: "France (Brittany)", description: "A Breton cake containing layers of butter and sugar folded in, similar in fashion to puff pastry albeit with fewer layers. The sugar caramelizes during baking. The name derives from the Breton words for cake ('kouign') and butter ('amann')."),
+    Pastry(name: "Cookie", origin: "Persia", description: " A cookie is a small sweet, crispy or cake-like pastry most often made with flour, sugar, liquid and fat. Persia were one of the first countries where sugar cane was grown and harvested. Cakes and pastries were a well-known treat within the Persian Empire."),
+    Pastry(name: "Kouign Amann", origin: "France", description: "A Breton cake containing layers of butter and sugar folded in, similar in fashion to puff pastry albeit with fewer layers. The sugar caramelizes during baking. The name derives from the Breton words for cake ('kouign') and butter ('amann')."),
     Pastry(name: "Danish", origin: "Denmark", description: "A sweet pastry, of Viennese origin, which has become a speciality of Denmark and neighboring Scandinavian countries. Called 'facturas' in Argentina and neighbouring countries"),
     Pastry(name: "Scone", origin: "Scotland", description: "Traditionally they are made with flour, butter, sugar and milk. Scones are thought to have originated in Scotland in the early 1500s and the first known print reference was made by a Scottish poet in 1513. "),
 ]
@@ -122,7 +122,7 @@ struct ContentView: View {
                     classifyImage(PastryImage: selectedImage)
                     showingSheet.toggle()
                 }){
-                    Text("Identify Pastry")
+                    Text("Identify")
                         .font(.headline)
                         .foregroundStyle(Color(.white))
                         .padding()
