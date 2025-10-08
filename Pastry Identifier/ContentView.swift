@@ -19,10 +19,10 @@ struct Pastry {
 // Create pastry data
 var pastries: [Pastry] = [
     Pastry(name: "Croissant", origin: "France", description: "A buttery flaky bread named for its distinctive crescent shape. Croissants are made of a leavened variant of puff pastry. The yeast dough is layered with butter, rolled and folded several times in succession, then rolled into a sheet, a technique called laminating. Croissants have long been a staple of French bakeries and pâtisseries."),
-    Pastry(name: "Cookie", origin: "Persia", description: " A cookie is a small sweet, crispy or cake-like pastry most often made with flour, sugar, liquid and fat. Persia were one of the first countries where sugar cane was grown and harvested. Cakes and pastries were a well-known treat within the Persian Empire."),
+    Pastry(name: "Cookie", origin: "Persia", description: "A small sweet, crispy or cake like pastry most often made with flour, sugar, liquid and fat. Persia was among the first regions to cultivate sugar cane, making cakes and pastries a well known delicacy within the Persian Empire (Modern-day Iran)."),
     Pastry(name: "Kouign Amann", origin: "France", description: "A Breton cake containing layers of butter and sugar folded in, similar in fashion to puff pastry albeit with fewer layers. The sugar caramelizes during baking. The name derives from the Breton words for cake ('kouign') and butter ('amann')."),
     Pastry(name: "Danish", origin: "Denmark", description: "A sweet pastry, of Viennese origin, which has become a speciality of Denmark and neighboring Scandinavian countries. Called 'facturas' in Argentina and neighbouring countries"),
-    Pastry(name: "Scone", origin: "Scotland", description: "Traditionally they are made with flour, butter, sugar and milk. Scones are thought to have originated in Scotland in the early 1500s and the first known print reference was made by a Scottish poet in 1513. "),
+    Pastry(name: "Scone", origin: "Scotland", description: "A lightly sweetened baked good traditionally made with flour, butter, sugar and milk. Scones are thought to have originated in Scotland in the early 1500s, with the first known print reference made by a Scottish poet in 1513."),
 ]
 // Get Patry information
 func getPastry(name: String) -> Pastry? {
@@ -46,6 +46,7 @@ struct ContentView: View {
     // Function to classify pastry
     func classifyImage(PastryImage:UIImage? ) {
         
+        // Convert image to ciImage for Vision framework compatability
         guard let image = PastryImage else { return }
         guard let ciImage = CIImage(image: image) else {
             print("Failed to create CIImage")
@@ -55,9 +56,9 @@ struct ContentView: View {
             let config = MLModelConfiguration()
             // Initialize model
             let model = try Pastry_SelectorV5_1(configuration: config)
-            //
+            // Initialize vision model
             let visionModel = try VNCoreMLModel(for: model.model)
-            // Create a request
+            // Create a request and run model within
             let request = VNCoreMLRequest(model: visionModel) { request, error in
                 if let error = error {
                     print("Error: \(error)")
@@ -65,12 +66,12 @@ struct ContentView: View {
                 }
                 // Get results
                 guard let results = request.results as? [VNClassificationObservation], let topResult = results.first else { print("No results");return }
-                //
+                // Parse through results
                 DispatchQueue.main.async{
                     // Logic for classification diplayed
                     if topResult.identifier == "Other"{
                         self.imageName = "Not Applicable"
-                        self.note = "This image does not fall within the classification types"
+                        self.note = "Image not recognized"
                     }
                     else if topResult.confidence > 0.90{
                         self.imageName = topResult.identifier
@@ -78,15 +79,17 @@ struct ContentView: View {
                     }
                     else if topResult.confidence > 0.60 && topResult.confidence < 0.90{
                         self.imageName = topResult.identifier
-                        self.note = "Low Confidence, item may be misclassified"
+                        self.note = "Low Confidence - may be misclassified"
                     }
                     else {
                         self.imageName = "Unclassified"
-                        self.note = "Very Low Confidence, try retaking the photo in a different orientation"
+                        self.note = "Very Low Confidence - try different angle"
                     }
                 }
             }
+            //
             let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
+            // Run the model
             try handler.perform([request])
         } catch {
             //
