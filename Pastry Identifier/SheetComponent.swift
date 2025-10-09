@@ -23,7 +23,7 @@ struct SheetComponent: View {
                 HStack{
                     // Maps component
                     Button(action: {
-                      // Add code
+                        // Add code
                     }){
                         HStack{
                             Text("Find")
@@ -56,11 +56,11 @@ struct SheetComponent: View {
                             
                         }
                     } message: {
-                            Text("1,2,3")
+                        Text("1,2,3")
                     }
                     // Nutrition component for item (api call)
                     Button(action: {
-                      // Add code
+                        // Add code
                     }){
                         HStack{
                             Text("Nutrition")
@@ -68,7 +68,7 @@ struct SheetComponent: View {
                         }
                         .padding()
                         .font(.subheadline)
-                        .foregroundStyle(.brown)
+                        .foregroundStyle(.green)
                         .background(.ultraThinMaterial)
                         .cornerRadius(20)
                         .frame(maxWidth: 350)
@@ -91,9 +91,9 @@ struct SheetComponent: View {
                     HStack{
                         Text(imageName)
                             .font(.headline)
-                            .foregroundStyle(.brown)
+                            .foregroundStyle(.black)
                         Image(systemName: "info.circle.fill")
-                            .foregroundStyle(.brown)
+                            .foregroundStyle(.primary)
                     }
                 }
                 .alert("Disclaimer",isPresented: $classificationDisclaimer){
@@ -123,7 +123,7 @@ struct SheetComponent: View {
                             .font(.headline)
                             .foregroundStyle(.black)
                         Image(systemName: "info.circle.fill")
-                            .foregroundStyle(.brown)
+                            .foregroundStyle(.primary)
                     }
                 }
                 .alert("Disclaimer",isPresented: $classificationDisclaimer){
@@ -138,7 +138,7 @@ struct SheetComponent: View {
                 Spacer()
             }
             // Information and history of item (pulled from assets
-            if let pastry = pastry{ //unwrap 
+            if let pastry = pastry{ //unwrap
                 Text("\(pastry.origin)")
                     .padding()
                     .background(.ultraThinMaterial)
@@ -147,20 +147,20 @@ struct SheetComponent: View {
                 Text("Origin")
                     .font(.system(size: 10.0))
                     .foregroundStyle(.secondary)
-            Spacer()
+                Spacer()
                 Text("\(pastry.description)")
-                        .padding()
-                        .multilineTextAlignment(.center)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(30)
-                        .frame(width: 350)
+                    .padding()
+                    .multilineTextAlignment(.center)
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(30)
+                    .frame(width: 350)
                 Text("Description")
                     .font(.system(size: 10.0))
                     .foregroundStyle(.secondary)
                 Spacer()
             }
-            }
         }
     }
+}
 
 

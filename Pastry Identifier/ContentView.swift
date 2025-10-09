@@ -56,7 +56,7 @@ struct ContentView: View {
         do{
             let config = MLModelConfiguration()
             // Initialize model
-            let model = try Pastry_SelectorV5_2(configuration: config)
+            let model = try Pastry_SelectorV5_3(configuration: config)
             // Initialize vision model
             let visionModel = try VNCoreMLModel(for: model.model)
             // Create a request and run model within
@@ -144,7 +144,10 @@ struct ContentView: View {
                             // Call sheet with information prefilled
                             SheetComponent(imageName: imageName, note: note, pastry: getPastry(name: imageName))
                             // Allows sheet to load halfway intially with the option to enlarge
-                                .presentationDetents([.medium, .large])
+                                .presentationDetents(
+                                    (imageName == "Not Applicable" || imageName == "Unclassified") ? [.medium] : [.large]
+                                )
+                                .presentationBackground(.brown.gradient)
                         }
             }
             Button(action: {
@@ -155,7 +158,7 @@ struct ContentView: View {
                     .foregroundStyle(Color(.brown))
                     .padding()
                     .frame(width: 300)
-                    .background(Color.brown.gradient.opacity(0.1))
+                    .background(Color.brown.gradient.opacity(0.2))
                     .cornerRadius(30)
             }
             // A sheet in SwiftUI is a view that pops up over your current interface to present additional content or functionality. In this case the camera screen.
