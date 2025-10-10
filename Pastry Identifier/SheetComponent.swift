@@ -15,11 +15,15 @@ struct SheetComponent: View {
     
     @State private var classificationDisclaimer = false
     @State private var allergensAlert = false
+    @State private var popOverShowing = false
+    @State private var showMap = false
+    @State private var showNutrition = false
     
     var body: some View{
         VStack(){
             if pastry != nil{
                 Spacer()
+                // Components for more information
                 HStack{
                     // Maps component
                     Button(action: {
@@ -32,13 +36,12 @@ struct SheetComponent: View {
                         .padding()
                         .font(.subheadline)
                         .foregroundStyle(.primary)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(20)
+                        .glassEffect(.regular.interactive())
                         .frame(maxWidth: 350)
                     }
                     //Allergen information
                     Button(action: {
-                        allergensAlert.toggle()
+                        popOverShowing.toggle()
                     }){
                         HStack{
                             Text("Allergens")
@@ -47,20 +50,29 @@ struct SheetComponent: View {
                         .padding()
                         .font(.subheadline)
                         .foregroundStyle(.red)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(20)
+                        .glassEffect(.regular.interactive())
                         .frame(maxWidth: 350)
                     }
-                    .alert("May Contain", isPresented: $allergensAlert){
-                        Button("OK"){
-                            
+                    // Small Pop up component
+                    .popover(isPresented: $popOverShowing, arrowEdge: .top, ){
+                        VStack{
+                            Text("May Contain")
+                                .font(.headline)
+                            HStack{
+                                Text("Dairy")
+                                Text("Gluten")
+                                Text("Nuts")
+                                Text("Yeast")
+                            }
+                            .padding()
                         }
-                    } message: {
-                        Text("1,2,3")
+                        .padding()
+                        .presentationCompactAdaptation(.popover)
                     }
                     // Nutrition component for item (api call)
                     Button(action: {
                         // Add code
+                        showNutrition.toggle()
                     }){
                         HStack{
                             Text("Nutrition")
@@ -69,10 +81,12 @@ struct SheetComponent: View {
                         .padding()
                         .font(.subheadline)
                         .foregroundStyle(.green)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(20)
+                        .glassEffect(.regular.interactive())
                         .frame(maxWidth: 350)
                     }
+//                    .popover(isPresented: $showNutrition){
+//                            NutritionList(nutritionItems: [nutritionExample])
+//                    }
                 }
                 Spacer()
                 Spacer()
@@ -85,78 +99,63 @@ struct SheetComponent: View {
                     .shadow(radius: 15)
                     .padding()
                 // Heading for name of item (pullled from assets)
-                Button(action: {
-                    classificationDisclaimer.toggle()
-                }){
-                    HStack{
-                        Text(imageName)
-                            .font(.headline)
-                            .foregroundStyle(.black)
-                        Image(systemName: "info.circle.fill")
-                            .foregroundStyle(.primary)
+                HStack{
+                    Text(imageName)
+                        .font(.headline)
+                    Button(action: {
+                        classificationDisclaimer.toggle()
+                    }){
+                            Image(systemName: "info.circle.fill")
+                                .foregroundStyle(.primary)
                     }
-                }
-                .alert("Disclaimer",isPresented: $classificationDisclaimer){
-                    Button("I Understand"){}
-                } message: {
-                    Text("This model may produce inaccurate results. Please verify findings independently and use with appropriate caution.")
+                    .alert("Disclaimer",isPresented: $classificationDisclaimer){
+                        Button("I Understand"){}
+                    } message: {
+                        Text("This model may produce inaccurate results. Please verify findings independently and use with appropriate caution.")
+                    }
                 }
                 //Confidence text
                 Text(note)
                     .font(.system(size: 10.0))
-                    .foregroundStyle(.secondary)
                 Spacer()
             } else {
                 Spacer()
-                Image(systemName: "xmark")
-                    .foregroundStyle(.secondary)
-                    .padding()
-                    .frame(width: 200, height: 200)
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(30)
-                    .padding()
-                Button(action: {
-                    classificationDisclaimer.toggle()
-                }){
-                    HStack{
-                        Text(imageName)
-                            .font(.headline)
-                            .foregroundStyle(.black)
-                        Image(systemName: "info.circle.fill")
-                            .foregroundStyle(.primary)
+                HStack{
+                    Text(imageName)
+                        .font(.headline)
+                    Button(action: {
+                        classificationDisclaimer.toggle()
+                    }){
+                            Image(systemName: "info.circle.fill")
+                                .foregroundStyle(.primary)
                     }
-                }
-                .alert("Disclaimer",isPresented: $classificationDisclaimer){
-                    Button("I Understand"){}
-                } message: {
-                    Text("This model may produce inaccurate results. Please verify findings independently and use with appropriate caution.")
+                    .alert("Disclaimer",isPresented: $classificationDisclaimer){
+                        Button("I Understand"){}
+                    } message: {
+                        Text("This model may produce inaccurate results. Please verify findings independently and use with appropriate caution.")
+                    }
                 }
                 //Confidence text
                 Text(note)
                     .font(.system(size: 10.0))
-                    .foregroundStyle(.secondary)
                 Spacer()
             }
             // Information and history of item (pulled from assets
             if let pastry = pastry{ //unwrap
                 Text("\(pastry.origin)")
                     .padding()
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(20)
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 16))
                     .frame(maxWidth: 350)
                 Text("Origin")
                     .font(.system(size: 10.0))
-                    .foregroundStyle(.secondary)
                 Spacer()
                 Text("\(pastry.description)")
                     .padding()
                     .multilineTextAlignment(.center)
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(30)
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 16))
                     .frame(width: 350)
                 Text("Description")
                     .font(.system(size: 10.0))
-                    .foregroundStyle(.secondary)
                 Spacer()
             }
         }

@@ -72,13 +72,13 @@ struct ContentView: View {
                     // Logic for classification diplayed
                     if topResult.identifier == "Other"{
                         self.imageName = "Not Applicable"
-                        self.note = "Image not recognized"
+                        self.note = "Image not within classification scope"
                     }
                     else if topResult.confidence > 0.90{
                         self.imageName = topResult.identifier
                         self.note = "High Confidence"
                     }
-                    else if topResult.confidence > 0.60 && topResult.confidence < 0.90{
+                    else if topResult.confidence > 0.55 && topResult.confidence < 0.90{
                         self.imageName = topResult.identifier
                         self.note = "Low Confidence - may be misclassified"
                     }
@@ -122,8 +122,8 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
                     .padding()
                     .frame(width: 300, height: 300)
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(30)
+                    .glassEffect(in: .rect(cornerRadius: 16))
+
             }
             Spacer()
             // Selector for classification
@@ -137,7 +137,7 @@ struct ContentView: View {
                         .foregroundStyle(Color(.white))
                         .padding()
                         .frame(width: 300)
-                        .background(Color.green.gradient)
+                        .glassEffect(.regular.tint(.green.opacity(0.7)))
                         .cornerRadius(30)
                 }
                         .sheet(isPresented: $showingSheet){
@@ -145,9 +145,8 @@ struct ContentView: View {
                             SheetComponent(imageName: imageName, note: note, pastry: getPastry(name: imageName))
                             // Allows sheet to load halfway intially with the option to enlarge
                                 .presentationDetents(
-                                    (imageName == "Not Applicable" || imageName == "Unclassified") ? [.medium] : [.large]
+                                    (imageName == "Not Applicable" || imageName == "Unclassified") ? [.height(200)] : [.height(375), .large]
                                 )
-                                .presentationBackground(.brown.gradient)
                         }
             }
             Button(action: {
@@ -158,7 +157,7 @@ struct ContentView: View {
                     .foregroundStyle(Color(.brown))
                     .padding()
                     .frame(width: 300)
-                    .background(Color.brown.gradient.opacity(0.2))
+                    .glassEffect(.regular.tint(.brown.opacity(0.2)))
                     .cornerRadius(30)
             }
             // A sheet in SwiftUI is a view that pops up over your current interface to present additional content or functionality. In this case the camera screen.
@@ -172,7 +171,7 @@ struct ContentView: View {
                     .foregroundStyle(Color(.white).opacity(0.8))
                     .padding()
                     .frame(width: 300)
-                    .background(Color.brown.gradient)
+                    .glassEffect(.regular.tint(.brown))
                     .cornerRadius(30)
             }
             .onChange(of: selectedItem) { olditem, newitem in
