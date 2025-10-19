@@ -56,7 +56,7 @@ struct ContentView: View {
         do{
             let config = MLModelConfiguration()
             // Initialize model
-            let model = try Pastry_SelectorV5_3(configuration: config)
+            let model = try Pastry_SelectorV6(configuration: config)
             // Initialize vision model
             let visionModel = try VNCoreMLModel(for: model.model)
             // Create a request and run model within
