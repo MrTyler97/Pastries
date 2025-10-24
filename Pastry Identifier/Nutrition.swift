@@ -20,58 +20,75 @@ struct Nutrition{
 let nutritionExample: Nutrition = Nutrition(Fat: "1g", Carbohydrates: "2g", Sugar: "3g", Fiber: "4g", Cholesterol: "5g", Protein: "6g", Sodium: "7g", Total_Calories: "8g")
 
 struct NutritionRowView: View {
-    var nutrition: Nutrition
+    var nutrition: Nutrition = nutritionExample
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text("Nutritional Information")
+        VStack() {
+            Text("Nutrition")
                 .foregroundColor(.primary)
                 .font(.headline)
             
             HStack(spacing: 3) {
-                Label(nutrition.Total_Calories, systemImage: "flame.fill")
+                Text("Calories")
+                Spacer()
+                Text(nutrition.Total_Calories)
+                    
             }
             .foregroundColor(.secondary)
             .font(.subheadline)
             
             HStack(spacing: 3) {
-                Label(nutrition.Protein, systemImage: "bolt.fill")
+                Text("Protein")
+                Spacer()
+                Text(nutrition.Protein)
             }
             .foregroundColor(.secondary)
             .font(.subheadline)
             
             HStack(spacing: 3) {
-                Label(nutrition.Carbohydrates, systemImage: "leaf.fill")
+                Text("Total Carbohydrates")
+                Spacer()
+                Text(nutrition.Carbohydrates)
             }
             .foregroundColor(.secondary)
             .font(.subheadline)
             
             HStack(spacing: 3) {
-                Label(nutrition.Fat, systemImage: "drop.fill")
+                Text("Fat")
+                Spacer()
+                Text(nutrition.Fat)
             }
             .foregroundColor(.secondary)
             .font(.subheadline)
             
             HStack(spacing: 3) {
-                Label(nutrition.Sugar, systemImage: "cube.fill")
+                Text("Sugar")
+                Spacer()
+                Text(nutrition.Sugar)
             }
             .foregroundColor(.secondary)
             .font(.subheadline)
             
             HStack(spacing: 3) {
-                Label(nutrition.Fiber, systemImage: "circle.grid.cross.fill")
+                Text("Fiber")
+                Spacer()
+                Text(nutrition.Fiber)
             }
             .foregroundColor(.secondary)
             .font(.subheadline)
             
             HStack(spacing: 3) {
-                Label(nutrition.Cholesterol, systemImage: "heart.fill")
+                Text("Cholesterol")
+                Spacer()
+                Text(nutrition.Cholesterol)
             }
             .foregroundColor(.secondary)
             .font(.subheadline)
             
             HStack(spacing: 3) {
-                Label(nutrition.Sodium, systemImage: "sparkles")
+                Text("Sodium")
+                Spacer()
+                Text(nutrition.Sodium)
             }
             .foregroundColor(.secondary)
             .font(.subheadline)
@@ -79,14 +96,14 @@ struct NutritionRowView: View {
     }
 }
 
-struct NutritionList: View {
-    var nutritionItems: [Nutrition]
-    
-    var body: some View {
-        List {
-            ForEach(nutritionItems.indices, id: \.self) { index in
-                NutritionRowView(nutrition: nutritionItems[index])
-            }
-        }
-    }
-}
+//struct NutritionList: View {
+//    var nutritionItems: [Nutrition]
+//    
+//    var body: some View {
+//        List {
+//            ForEach(nutritionItems.indices, id: \.self) { index in
+//                NutritionRowView(nutrition: nutritionItems[index])
+//            }
+//        }
+//    }
+//}

@@ -28,10 +28,11 @@ struct SheetComponent: View {
                     // Maps component
                     Button(action: {
                         // Add code
+                        showMap.toggle()
                     }){
                         HStack{
-                            Text("Find")
-                            Image(systemName: "location.fill")
+                            //Text("Find")
+                            Image(systemName: "location.magnifyingglass")
                         }
                         .padding()
                         .font(.subheadline)
@@ -39,12 +40,15 @@ struct SheetComponent: View {
                         .glassEffect(.regular.interactive())
                         .frame(maxWidth: 350)
                     }
+                    .fullScreenCover(isPresented: $showMap){
+                        MapView()
+                    }
                     //Allergen information
                     Button(action: {
                         popOverShowing.toggle()
                     }){
                         HStack{
-                            Text("Allergens")
+                            //Text("Allergens")
                             Image(systemName: "exclamationmark.bubble.fill")
                         }
                         .padding()
@@ -75,7 +79,7 @@ struct SheetComponent: View {
                         showNutrition.toggle()
                     }){
                         HStack{
-                            Text("Nutrition")
+                            //Text("Nutrition")
                             Image(systemName: "list.bullet.rectangle.portrait")
                         }
                         .padding()
@@ -84,35 +88,42 @@ struct SheetComponent: View {
                         .glassEffect(.regular.interactive())
                         .frame(maxWidth: 350)
                     }
-//                    .popover(isPresented: $showNutrition){
-//                            NutritionList(nutritionItems: [nutritionExample])
-//                    }
+                    .popover(isPresented: $showNutrition, arrowEdge: .top){
+                            NutritionRowView()
+                            .presentationCompactAdaptation(.popover)
+                            .padding()
+                    }
                 }
                 Spacer()
                 Spacer()
                 // Place holder for asset image of item
-                Image("\(imageName)")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 200)
-                    .cornerRadius(30)
-                    .shadow(radius: 15)
+                ZStack(alignment: .topTrailing) {
+                    Image("\(imageName)")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 200)
+                        .cornerRadius(30)
+                        .shadow(radius: 15)
+                        .padding()
+                    
+                    Button(action: {
+                        classificationDisclaimer.toggle()
+                    }) {
+                        Image(systemName: "info.circle.fill")
+                            .font(.title2)
+                            .padding(8)
+                    }
                     .padding()
+                    .alert("Disclaimer", isPresented: $classificationDisclaimer) {
+                        Button("I Understand") {}
+                    } message: {
+                        Text("This model may produce inaccurate results. Please verify findings independently and use with appropriate caution.")
+                    }
+                }
                 // Heading for name of item (pullled from assets)
                 HStack{
                     Text(imageName)
                         .font(.headline)
-                    Button(action: {
-                        classificationDisclaimer.toggle()
-                    }){
-                            Image(systemName: "info.circle.fill")
-                                .foregroundStyle(.primary)
-                    }
-                    .alert("Disclaimer",isPresented: $classificationDisclaimer){
-                        Button("I Understand"){}
-                    } message: {
-                        Text("This model may produce inaccurate results. Please verify findings independently and use with appropriate caution.")
-                    }
                 }
                 //Confidence text
                 Text(note)
@@ -144,7 +155,9 @@ struct SheetComponent: View {
             if let pastry = pastry{ //unwrap
                 Text("\(pastry.origin)")
                     .padding()
-                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 16))
+                    //.glassEffect(.regular.interactive(), in: .rect(cornerRadius: 16))
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(16)
                     .frame(maxWidth: 350)
                 Text("Origin")
                     .font(.system(size: 10.0))
@@ -152,7 +165,9 @@ struct SheetComponent: View {
                 Text("\(pastry.description)")
                     .padding()
                     .multilineTextAlignment(.center)
-                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 16))
+                    //.glassEffect(.regular.interactive(), in: .rect(cornerRadius: 16))
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(16)
                     .frame(width: 350)
                 Text("Description")
                     .font(.system(size: 10.0))

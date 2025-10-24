@@ -257,9 +257,11 @@
 				DEVELOPMENT_TEAM = V9A4P668PA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Pastry-Identifier-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Pastries;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Need to access camera to classify pastry. ";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Pastries needs your location to display bakeries near you.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Need to access photo library in order to classify pastry. ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -296,9 +298,11 @@
 				DEVELOPMENT_TEAM = V9A4P668PA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Pastry-Identifier-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Pastries;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Need to access camera to classify pastry. ";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Pastries needs your location to display bakeries near you.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Need to access photo library in order to classify pastry. ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
