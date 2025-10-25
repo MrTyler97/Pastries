@@ -31,7 +31,6 @@ struct SheetComponent: View {
                         showMap.toggle()
                     }){
                         HStack{
-                            //Text("Find")
                             Image(systemName: "location.magnifyingglass")
                         }
                         .padding()
@@ -48,7 +47,6 @@ struct SheetComponent: View {
                         popOverShowing.toggle()
                     }){
                         HStack{
-                            //Text("Allergens")
                             Image(systemName: "exclamationmark.bubble.fill")
                         }
                         .padding()
@@ -58,7 +56,7 @@ struct SheetComponent: View {
                         .frame(maxWidth: 350)
                     }
                     // Small Pop up component
-                    .popover(isPresented: $popOverShowing, arrowEdge: .top, ){
+                    .popover(isPresented: $popOverShowing ){
                         VStack{
                             Text("May Contain")
                                 .font(.headline)
@@ -79,8 +77,7 @@ struct SheetComponent: View {
                         showNutrition.toggle()
                     }){
                         HStack{
-                            //Text("Nutrition")
-                            Image(systemName: "list.bullet.rectangle.portrait")
+                            Image(systemName: "list.bullet.rectangle")
                         }
                         .padding()
                         .font(.subheadline)
@@ -88,7 +85,7 @@ struct SheetComponent: View {
                         .glassEffect(.regular.interactive())
                         .frame(maxWidth: 350)
                     }
-                    .popover(isPresented: $showNutrition, arrowEdge: .top){
+                    .popover(isPresented: $showNutrition){
                             NutritionRowView()
                             .presentationCompactAdaptation(.popover)
                             .padding()
@@ -112,6 +109,7 @@ struct SheetComponent: View {
                         Image(systemName: "info.circle.fill")
                             .font(.title2)
                             .padding(8)
+                            .foregroundStyle(.bar)
                     }
                     .padding()
                     .alert("Disclaimer", isPresented: $classificationDisclaimer) {
@@ -138,7 +136,6 @@ struct SheetComponent: View {
                         classificationDisclaimer.toggle()
                     }){
                             Image(systemName: "info.circle.fill")
-                                .foregroundStyle(.primary)
                     }
                     .alert("Disclaimer",isPresented: $classificationDisclaimer){
                         Button("I Understand"){}
@@ -158,7 +155,6 @@ struct SheetComponent: View {
                     //.glassEffect(.regular.interactive(), in: .rect(cornerRadius: 16))
                     .background(.ultraThinMaterial)
                     .cornerRadius(16)
-                    .frame(maxWidth: 350)
                 Text("Origin")
                     .font(.system(size: 10.0))
                 Spacer()
@@ -168,7 +164,7 @@ struct SheetComponent: View {
                     //.glassEffect(.regular.interactive(), in: .rect(cornerRadius: 16))
                     .background(.ultraThinMaterial)
                     .cornerRadius(16)
-                    .frame(width: 350)
+                    .frame(maxWidth: 350)
                 Text("Description")
                     .font(.system(size: 10.0))
                 Spacer()

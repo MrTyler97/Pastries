@@ -37,8 +37,10 @@ struct ContentView: View {
     @State private var selectedImage: UIImage?
     // Camera sheet visability
     @State private var showingCamera = false
-    // Sheet viewability
+    // Main Sheet viewability
     @State private var showingSheet = false
+    // Info Sheet
+    @State private var infoShowing = false
     // Classification Name
     @State private var imageName = ""
     // Classification note
@@ -99,95 +101,144 @@ struct ContentView: View {
     }
     // Main
     var body: some View {
-        VStack {
-            Spacer()
-            // Title
-            Text("Pastries")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(.brown)
-                .padding()
-            // Diplay Image
-            if let selectedImage = selectedImage {
-                Image(uiImage: selectedImage)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 300)
-                    .cornerRadius(30)
-                    .shadow(radius: 15)
-                    .padding()
-            } else {
-                // Place holder area if no image
-                Text("No image selected")
-                    .foregroundStyle(.secondary)
-                    .padding()
-                    .frame(width: 300, height: 300)
-                    .glassEffect(in: .rect(cornerRadius: 16))
-
-            }
-            Spacer()
-            // Selector for classification
-            if let selectedImage = selectedImage {
-                Button(action: {
-                    classifyImage(PastryImage: selectedImage)
-                    showingSheet.toggle()
-                }){
-                    Text("Identify")
-                        .font(.headline)
-                        .foregroundStyle(Color(.white))
+        NavigationStack{
+            ZStack{
+                VStack {
+                    Spacer()
+                    // Title
+                    Text("Pastries")
+                        .font(.largeTitle)
+                        .bold()
                         .padding()
-                        .frame(width: 300)
-                        .glassEffect(.regular.tint(.green.opacity(0.7)))
-                        .cornerRadius(30)
-                }
+                    // Diplay Image
+                    if let selectedImage = selectedImage {
+                        Image(uiImage: selectedImage)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 300)
+                            .cornerRadius(30)
+                            .shadow(radius: 15)
+                            .padding()
+                    } else {
+                        // Place holder area if no image
+                        Text("No image selected")
+                            .foregroundStyle(.secondary)
+                            .padding()
+                            .frame(width: 300, height: 300)
+                            .glassEffect(.clear, in: .rect(cornerRadius: 16))
+                    }
+                    // Selector for classification
+                    if let selectedImage = selectedImage {
+                        Button(action: {
+                            classifyImage(PastryImage: selectedImage)
+                            showingSheet.toggle()
+                        }){
+                            Text("Identify")
+                                .font(.headline)
+                                .foregroundStyle(Color(.white))
+                                .padding()
+                                .frame(width: 250)
+                                .glassEffect(.regular.tint(.green.opacity(0.7)).interactive())
+                                .cornerRadius(30)
+                        }
                         .sheet(isPresented: $showingSheet){
                             // Call sheet with information prefilled
                             SheetComponent(imageName: imageName, note: note, pastry: getPastry(name: imageName))
                             // Allows sheet to load halfway intially with the option to enlarge
                                 .presentationDetents(
-                                    (imageName == "Not Applicable" || imageName == "Unclassified") ? [.height(200)] : [.height(375), .large]
+                                    (imageName == "Not Applicable" || imageName == "Unclassified") ? [.height(300)] : [.height(650), .large]
                                 )
+                                .presentationDragIndicator(.hidden)
                         }
-            }
-            Button(action: {
-                showingCamera.toggle()
-            }){
-                Text("Open Camera")
-                    .font(.headline)
-                    .foregroundStyle(Color(.brown))
+                    }
+                    HStack{
+                        Spacer()
+                        Button(action: {
+                            showingCamera.toggle()
+                        }){
+                            Image(systemName: "camera")
+                                .foregroundStyle(.white)
+                                .padding()
+                                .frame(width: 100)
+                                .glassEffect(.clear.interactive())
+                        }
+                        // A sheet in SwiftUI is a view that pops up over your current interface to present additional content or functionality. In this case the camera screen.
+                        .sheet(isPresented: $showingCamera){
+                            CameraView(image: $selectedImage)
+                        }
+                        Spacer()
+                        PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()){
+                            Image(systemName: "photo")
+                                .foregroundStyle(.white)
+                                .padding()
+                                .frame(width: 100)
+                                .glassEffect(.clear.interactive())
+                        }
+                        .onChange(of: selectedItem) { olditem, newitem in
+                            if let newitem = newitem {
+                                // Task just makes what ever code inside run aynchronusly
+                                Task {
+                                    // Load raw data of image then convert it
+                                    if let data = try? await newitem.loadTransferable(type: Data.self), let image = UIImage(data: data) {
+                                        selectedImage = image // Update elected image
+                                    }
+                                }
+                            }
+                        }
+                        Spacer()
+                    }
                     .padding()
-                    .frame(width: 300)
-                    .glassEffect(.regular.tint(.brown.opacity(0.2)))
-                    .cornerRadius(30)
-            }
-            // A sheet in SwiftUI is a view that pops up over your current interface to present additional content or functionality. In this case the camera screen.
-            .sheet(isPresented: $showingCamera){
-                CameraView(image: $selectedImage)
-            }
-            .padding()
-            PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()){
-                Text("Select Image")
-                    .font(.headline)
-                    .foregroundStyle(Color(.white).opacity(0.8))
-                    .padding()
-                    .frame(width: 300)
-                    .glassEffect(.regular.tint(.brown))
-                    .cornerRadius(30)
-            }
-            .onChange(of: selectedItem) { olditem, newitem in
-                if let newitem = newitem {
-                    // Task just makes what ever code inside run aynchronusly
-                    Task {
-                        // Load raw data of image then convert it
-                        if let data = try? await newitem.loadTransferable(type: Data.self), let image = UIImage(data: data) {
-                            selectedImage = image // Update elected image
+                    Spacer()
+                }
+                .padding()
+                // Information section
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            infoShowing.toggle()
+                        }){
+                            Image(systemName: "info")
+                        }
+                        .sheet(isPresented: $infoShowing, ) {
+                            VStack {
+                                Spacer()
+                                Text("Welcome!")
+                                    .font(.largeTitle)
+                                    .bold()
+                                    .padding()
+                                Spacer()
+                                Text("Model can only detect 5 different pastries.")
+                                    .padding()
+                                    .multilineTextAlignment(.center)
+                                    .frame(width: 300)
+                                    .background(.ultraThinMaterial)
+                                    .cornerRadius(16)
+                                Text("More coming soon")
+                                    .font(.caption)
+                                    .padding(.bottom)
+                                VStack(alignment: .center) {
+                                    ForEach (pastries, id: \.name){ pastry in
+                                        Text("\(pastry.name)")
+                                            .bold()
+                                            .padding(2)
+                                    }
+                                }
+                                .padding()
+                                .multilineTextAlignment(.center)
+                                .frame(width: 300)
+                                .background(.ultraThinMaterial)
+                                .cornerRadius(16)
+                                Spacer()
+                            }
+                            .presentationDetents([.medium])
                         }
                     }
                 }
             }
-            Spacer()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.brown.gradient)
+            .ignoresSafeArea()
         }
-        .padding()
     }
 }
 
