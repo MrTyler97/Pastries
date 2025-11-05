@@ -40,7 +40,7 @@ struct SheetComponent: View {
                         .frame(maxWidth: 350)
                     }
                     .fullScreenCover(isPresented: $showMap){
-                        MapView()
+                        MapView(pastry: pastry)
                     }
                     //Allergen information
                     Button(action: {
