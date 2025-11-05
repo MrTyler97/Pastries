@@ -15,12 +15,16 @@ struct MapView: View {
     let pastry: Pastry?
     // Location manager for requesting access
     let location = CLLocationManager()
+    // To narrow serach
+    @State private var userZipCode: String = ""
     // Users location to display
     @State var position: MapCameraPosition = .userLocation(fallback: .automatic)
     // Map Items (search results)
     @State var items: [MKMapItem] = []
     // Selected map item
-    @State var selected: MKMapItem?
+    @State var selected: MKMapItem? = nil
+    // Show selected location var
+    @State var showSelected = false
     
     // Check system if location services are already available
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -40,25 +44,18 @@ struct MapView: View {
             break
         }
     }
+    //Retrieving zip code
+    func getZipCode(){
+        CLGeocoder().reverseGeocodeLocation(location.location!) { placemarks, _ in
+                    self.userZipCode = placemarks?.first?.postalCode ?? ""
+                }
+    }
+    // Search local area for items
     func search() {
-//        // initialize search object
-//        let searchRequest = MKLocalSearch.Request()
-//        // Search term cluster
-//        searchRequest.naturalLanguageQuery = "bakery cafe \(pastry?.name ?? "") near \(location.location?.description ?? "")"
-//        //
-//            searchRequest.resultTypes = .pointOfInterest
-//            // Set searchable region
-//            if let coordinate = location.location?.coordinate {
-//                searchRequest.region = MKCoordinateRegion(
-//                    center: coordinate,
-//                    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-//                )
-//            }
-            
         let searchRequest = MKLocalSearch.Request()
            
            // Better query construction
-           var queryComponents = ["bakery", "cafe"]
+           var queryComponents = ["bakery", "cafe", userZipCode]
            if let pastryName = pastry?.name {
                queryComponents.insert(pastryName, at: 0)
            }
@@ -134,27 +131,15 @@ struct MapView: View {
                 MapPitchToggle()
                 MapScaleView()
             }
+        // Event listener for when item is selected
+            .onChange(of: selected) {
+                showSelected.toggle()
+            }
         // Small display for selected location information
-            .safeAreaInset(edge: .bottom) {
+            .sheet(isPresented: $showSelected){
                 if let selected = selected {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(selected.name ?? "Unknown")
-                                .font(.headline)
-                            if let address = selected.placemark.title {
-                                Text(address)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        Spacer()
-                        Button("Open in Maps") {
-                            selected.openInMaps()
-                        }
-                        .buttonStyle(.glass)
-                    }
-                    .padding()
-                    .glassEffect()
+                    SelectedLocationView(location: selected)
+                        .presentationDetents([.height(175)])
                 }
             }
         }
