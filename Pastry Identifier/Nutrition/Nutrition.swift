@@ -3,7 +3,11 @@
 //  Pastry Identifier
 //
 //  Created by Vic  on 10/9/25.
-//
+
+
+
+// Feature not functional at this moment.
+
 import SwiftUI
 
 struct Nutrition{

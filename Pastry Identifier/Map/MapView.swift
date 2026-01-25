@@ -56,6 +56,7 @@ struct MapView: View {
            
            // Better query construction
            var queryComponents = ["bakery", "cafe", userZipCode]
+            // add name of item to query components
            if let pastryName = pastry?.name {
                queryComponents.insert(pastryName, at: 0)
            }
@@ -122,6 +123,7 @@ struct MapView: View {
             .onAppear{
                 // Request user location if needed
                 locationManagerDidChangeAuthorization(location)
+                // Conduct search 
                 search()
             }
             // All controls for map

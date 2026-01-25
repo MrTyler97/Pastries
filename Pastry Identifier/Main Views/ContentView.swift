@@ -71,7 +71,7 @@ struct ContentView: View {
                 guard let results = request.results as? [VNClassificationObservation], let topResult = results.first else { print("No results");return }
                 // Parse through results
                 DispatchQueue.main.async{
-                    // Logic for classification diplayed
+                    // Logic for classification displayed
                     if topResult.identifier == "Other"{
                         self.imageName = "Not Applicable"
                         self.note = "Image not within classification scope"
@@ -127,6 +127,7 @@ struct ContentView: View {
                             .frame(width: 300, height: 300)
                             .glassEffect(.clear, in: .rect(cornerRadius: 16))
                     }
+                    Spacer()
                     // Selector for classification
                     if let selectedImage = selectedImage {
                         Button(action: {
@@ -137,9 +138,9 @@ struct ContentView: View {
                                 .font(.headline)
                                 .foregroundStyle(Color(.white))
                                 .padding()
-                                .frame(width: 250)
+                                .frame(width: 300)
                                 .glassEffect(.regular.tint(.green.opacity(0.7)).interactive())
-                                .cornerRadius(30)
+                        
                         }
                         .sheet(isPresented: $showingSheet){
                             // Call sheet with information prefilled
@@ -151,27 +152,25 @@ struct ContentView: View {
                                 .presentationDragIndicator(.hidden)
                         }
                     }
-                    HStack{
-                        Spacer()
+                    Spacer()
                         Button(action: {
                             showingCamera.toggle()
                         }){
                             Image(systemName: "camera")
                                 .foregroundStyle(.white)
                                 .padding()
-                                .frame(width: 100)
+                                .frame(width: 300)
                                 .glassEffect(.clear.interactive())
                         }
                         // A sheet in SwiftUI is a view that pops up over your current interface to present additional content or functionality. In this case the camera screen.
                         .sheet(isPresented: $showingCamera){
                             CameraView(image: $selectedImage)
                         }
-                        Spacer()
                         PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()){
                             Image(systemName: "photo")
                                 .foregroundStyle(.white)
                                 .padding()
-                                .frame(width: 100)
+                                .frame(width: 300)
                                 .glassEffect(.clear.interactive())
                         }
                         .onChange(of: selectedItem) { olditem, newitem in
@@ -185,8 +184,6 @@ struct ContentView: View {
                                 }
                             }
                         }
-                        Spacer()
-                    }
                     .padding()
                     Spacer()
                 }
@@ -211,7 +208,7 @@ struct ContentView: View {
                                     .padding()
                                     .multilineTextAlignment(.center)
                                     .frame(width: 300)
-                                    .background(Color.brown.gradient)
+                                    .background(.regularMaterial)
                                     .cornerRadius(16)
                                 Text("More coming soon")
                                     .font(.caption)
@@ -226,7 +223,7 @@ struct ContentView: View {
                                 .padding()
                                 .multilineTextAlignment(.center)
                                 .frame(width: 300)
-                                .background(Color.brown.gradient)
+                                .background(.regularMaterial)
                                 .cornerRadius(16)
                                 Spacer()
                             }
