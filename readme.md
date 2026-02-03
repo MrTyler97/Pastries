@@ -22,3 +22,6 @@ An iOS app that uses machine learning to identify pastries from photos and helps
 - SwiftUI with UIKit interop via `UIViewControllerRepresentable` for camera access
 - MapKit integration with `MKLocalSearch` for location-based bakery discovery
 - PhotosUI for photo library selection
+
+### Showcase
+[![Watch the video](https://img.youtube.com/vi/Y7515-p1G78/maxresdefault.jpg)](https://www.youtube.com/watch?v=Y7515-p1G78)   
