@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5F15BEA82F32401B003C5797 /* readme.md in Resources */ = {isa = PBXBuildFile; fileRef = 5F15BEA72F32400F003C5797 /* readme.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		5F15BEA72F32400F003C5797 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		5FA8BB3E2E7D9151005AC5BD /* Pastry Identifier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pastry Identifier.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -32,6 +37,7 @@
 		5FA8BB352E7D9151005AC5BD = {
 			isa = PBXGroup;
 			children = (
+				5F15BEA72F32400F003C5797 /* readme.md */,
 				5FA8BB3F2E7D9151005AC5BD /* Products */,
 				5FA8BB402E7D9151005AC5BD /* Pastry Identifier */,
 			);
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F15BEA82F32401B003C5797 /* readme.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
