@@ -1,5 +1,5 @@
 
-# Pastry Identifier
+# Pastries
 
 An iOS app that uses machine learning to identify pastries from photos and helps you find nearby bakeries serving them.
 
