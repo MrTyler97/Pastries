@@ -5,14 +5,11 @@
 //  Created by Vic  on 10/13/26.
 //
 
-// Mirrors PastryFood / PastryServing in the proxy's shape.ts.
-// The proxy already sends camelCase, so property names match the JSON exactly.
-// Optional fields are omitted by the proxy when unknown, and Decodable treats a
-// missing key on an Optional property as nil.
+// Mirrors PastryFood / PastryServing in the proxy
 struct PastryFood: Decodable {
     let foodId: String
     let name: String
-    let brand: String?          // Only on branded foods (Kouign Amann)
+    let brand: String?          // Only on branded foods 
     let servings: [PastryServing]
 }
 
