@@ -4,7 +4,7 @@
 //
 //  Created by Vic  on 10/13/26.
 //
-
+import MapKit
 // Mirrors PastryFood / PastryServing in the proxy
 struct PastryFood: Decodable {
     let foodId: String
@@ -26,4 +26,13 @@ struct PastryServing: Decodable {
     let fiber: Double?
     let sodium: Double?         // mg
     let cholesterol: Double?    // mg
+}
+
+// A search result shown on the map
+struct Bakery: Identifiable, Hashable {
+    let id = UUID()
+    let mapItem: MKMapItem
+    // True when Apple Maps matched the pastry name, not just "bakery nearby".
+    // Apple Maps has no menu data, so this means "likely has it", not "sells it".
+    let hasPastry: Bool
 }
