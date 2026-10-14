@@ -86,7 +86,7 @@ struct SheetComponent: View {
                         .frame(maxWidth: 350)
                     }
                     .popover(isPresented: $showNutrition){
-                            NutritionRowView()
+                            NutritionRowView(classLabel: imageName)
                             .presentationCompactAdaptation(.popover)
                             .padding()
                     }

@@ -147,3 +147,7 @@ struct MapView: View {
         }
     }
 
+
+#Preview {
+    MapView(pastry: Pastry(name: "Croissant", origin: "France", description: "A buttery flaky bread named for its distinctive crescent shape. Croissants are made of a leavened variant of puff pastry. The yeast dough is layered with butter, rolled and folded several times in succession, then rolled into a sheet, a technique called laminating. Croissants have long been a staple of French bakeries and pâtisseries."))
+}
