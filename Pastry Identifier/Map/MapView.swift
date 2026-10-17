@@ -21,11 +21,28 @@ struct MapView: View {
     @State var bakeries: [Bakery] = []
     // Tapped marker. Also drives the sheet: closing the sheet sets this back to nil
     @State var selected: Bakery? = nil
+    // True once the camera has zoomed out to show the first results
+    @State private var hasFitCamera = false
+    // True while the bakery search is running
+    @State private var isSearching = false
+
+    // Show the loading indicator while waiting for either the location or the search
+    var isLoading: Bool {
+        locationManager.isLocating || isSearching
+    }
 
     // Ask the search service for bakeries around the user (see SearchLogic.swift)
     func search() async {
         guard let userLocation = locationManager.location else { return }
+        isSearching = true
         bakeries = await BakerySearchService().search(for: pastry?.name, near: userLocation)
+        isSearching = false
+
+        // First load only: zoom to fit every marker. Later refreshes leave the camera where the user put it
+        if !hasFitCamera && !bakeries.isEmpty {
+            position = .automatic
+            hasFitCamera = true
+        }
     }
 
     var body: some View {
@@ -63,7 +80,7 @@ struct MapView: View {
             .task(id: locationManager.location) {
                 await search()
             }
-            // Explain an empty map when location is off
+            // Status message at the bottom: location off, or still loading
             .overlay(alignment: .bottom) {
                 if locationManager.isDenied {
                     Text("Turn on location in Settings to find bakeries near you.")
@@ -72,6 +89,16 @@ struct MapView: View {
                         .background(.regularMaterial)
                         .cornerRadius(16)
                         .padding()
+                } else if isLoading {
+                    HStack {
+                        ProgressView()
+                        Text("Finding bakeries…")
+                    }
+                    .font(.subheadline)
+                    .padding()
+                    .background(.regularMaterial)
+                    .cornerRadius(16)
+                    .padding()
                 }
             }
             // All controls for map

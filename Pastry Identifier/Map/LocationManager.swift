@@ -15,9 +15,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     var location: CLLocation?
     // True when the user has turned location off for this app
     var isDenied = false
+    // True while waiting for a location fix
+    var isLocating = false
 
     override init() {
         super.init()
+        // ~100 m is plenty for finding bakeries and arrives much faster than the default (best) accuracy
+        manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         // Setting the delegate makes iOS call locationManagerDidChangeAuthorization right away
         manager.delegate = self
     }
@@ -29,7 +33,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             manager.requestWhenInUseAuthorization()
         case .authorizedWhenInUse, .authorizedAlways:
             isDenied = false
-            manager.requestLocation() // One-time fix, delivered to didUpdateLocations
+            // Use a location from the last 5 minutes right away if iOS has one, otherwise ask for a new fix
+            if let recent = manager.location, recent.timestamp.timeIntervalSinceNow > -300 {
+                location = recent
+            } else {
+                isLocating = true
+                manager.requestLocation() // One-time fix, delivered to didUpdateLocations
+            }
         case .denied, .restricted:
             isDenied = true
         @unknown default:
@@ -39,9 +49,11 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         location = locations.last
+        isLocating = false
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Location error: \(error)")
+        isLocating = false
     }
 }

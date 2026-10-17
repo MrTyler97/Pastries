@@ -28,12 +28,17 @@ struct BakerySearchService {
             latitudinalMeters: searchRadius * 2,
             longitudinalMeters: searchRadius * 2
         )
-        let pastryPlaces = (try? await MKLocalSearch(request: pastryRequest).start().mapItems) ?? []
 
         // Pass 2: all bakeries and cafes nearby
         let nearbyRequest = MKLocalPointsOfInterestRequest(center: userLocation.coordinate, radius: searchRadius)
         nearbyRequest.pointOfInterestFilter = bakeriesAndCafes
-        let nearbyPlaces = (try? await MKLocalSearch(request: nearbyRequest).start().mapItems) ?? []
+
+        // Run both searches at the same time - neither needs the other's results
+        async let pastryResponse = MKLocalSearch(request: pastryRequest).start()
+        async let nearbyResponse = MKLocalSearch(request: nearbyRequest).start()
+        // A failed search just contributes no places
+        let pastryPlaces = (try? await pastryResponse)?.mapItems ?? []
+        let nearbyPlaces = (try? await nearbyResponse)?.mapItems ?? []
 
         // Merge: pastry matches first, then nearby places that aren't already in the list
         var results = pastryPlaces.map { Bakery(mapItem: $0, hasPastry: true) }
