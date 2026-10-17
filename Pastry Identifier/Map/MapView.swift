@@ -19,26 +19,26 @@ struct MapView: View {
     @State var position: MapCameraPosition = .userLocation(fallback: .automatic)
     // Search results, nearest first
     @State var bakeries: [Bakery] = []
-    // Tapped marker. Also drives the sheet: closing the sheet sets this back to nil
+    // Tapped marker; also drives the sheet
     @State var selected: Bakery? = nil
-    // True once the camera has zoomed out to show the first results
+    // Camera fit to first results
     @State private var hasFitCamera = false
     // True while the bakery search is running
     @State private var isSearching = false
 
-    // Show the loading indicator while waiting for either the location or the search
+    // Waiting on location or search
     var isLoading: Bool {
         locationManager.isLocating || isSearching
     }
 
-    // Ask the search service for bakeries around the user (see SearchLogic.swift)
+    // Load bakeries around the user
     func search() async {
         guard let userLocation = locationManager.location else { return }
         isSearching = true
         bakeries = await BakerySearchService().search(for: pastry?.name, near: userLocation)
         isSearching = false
 
-        // First load only: zoom to fit every marker. Later refreshes leave the camera where the user put it
+        // First load only: zoom to fit all markers
         if !hasFitCamera && !bakeries.isEmpty {
             position = .automatic
             hasFitCamera = true
@@ -51,7 +51,7 @@ struct MapView: View {
                 // Display user location
                 UserAnnotation()
 
-                // Display searched locations. Brown = matched the pastry, gray = just a nearby bakery/cafe
+                // Brown = pastry match, gray = nearby bakery/cafe
                 ForEach(bakeries) { bakery in
                     Marker(bakery.mapItem.name ?? "?", systemImage: "storefront.fill", coordinate: bakery.mapItem.location.coordinate)
                         .tint(bakery.hasPastry ? Color(.brown) : Color(.gray))
@@ -76,11 +76,11 @@ struct MapView: View {
                     }
                 }
             }
-            // Runs on appear, and again whenever the location changes (e.g. the first fix arrives)
+            // Runs on appear and when the location changes
             .task(id: locationManager.location) {
                 await search()
             }
-            // Status message at the bottom: location off, or still loading
+            // Status: location off or loading
             .overlay(alignment: .bottom) {
                 if locationManager.isDenied {
                     Text("Turn on location in Settings to find bakeries near you.")

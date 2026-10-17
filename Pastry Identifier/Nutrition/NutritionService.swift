@@ -7,13 +7,13 @@
 
 import Foundation
 
-// One case per proxy status, so the UI can say something useful
+// One case per proxy status
 enum NutritionError: Error {
-    case unauthorized                           // 401 - bad/missing key (a bug, not the user's fault)
+    case unauthorized                           // 401 - bad/missing key
     case notFound                               // 404 - unknown food_id
     case rateLimited(retryAfter: TimeInterval?) // 429 - too many requests this minute
     case quotaExhausted                         // 503 - daily quota spent
-    case upstream                               // 502 and anything else - FatSecret refused
+    case upstream                               // 502 and other failures
     case decoding(Error)                        // JSON didn't match PastryFood
 
     // Message shown in the nutrition popover
@@ -31,7 +31,7 @@ struct NutritionService {
     // Simulator can reach the Mac's localhost directly
     let baseURL = URL(string: "http://localhost:3000")!
 
-    // Classifier label -> FatSecret food_id (verified in the proxy spec, Phase 2)
+    // Classifier label -> FatSecret food_id
     let foodIds: [String: String] = [
         "croissant": "3533",
         "cookie": "3936",
@@ -51,8 +51,7 @@ struct NutritionService {
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let http = response as? HTTPURLResponse else { throw NutritionError.upstream }
 
-        // Check the status before decoding - an error body is { error, requestId },
-        // and decoding it as PastryFood would throw a misleading keyNotFound
+        // Check status first; error bodies don't decode as PastryFood
         switch http.statusCode {
         case 200:
             break

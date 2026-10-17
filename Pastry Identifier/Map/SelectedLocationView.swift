@@ -10,7 +10,7 @@ import MapKit
 struct SelectedLocationView: View {
     @Environment(\.dismiss) var dismiss
     let location: MKMapItem
-    // e.g. "May have Croissant" (nil for bakeries that only matched as "nearby")
+    // e.g. "May have Croissant"
     var note: String? = nil
 
     var body: some View {

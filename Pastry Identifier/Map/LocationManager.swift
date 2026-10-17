@@ -11,7 +11,7 @@ import CoreLocation
 class LocationManager: NSObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
 
-    // The user's current location (nil until the first fix arrives)
+    // Current location, nil until the first fix
     var location: CLLocation?
     // True when the user has turned location off for this app
     var isDenied = false
@@ -20,9 +20,9 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
 
     override init() {
         super.init()
-        // ~100 m is plenty for finding bakeries and arrives much faster than the default (best) accuracy
+        // ~100 m is enough and much faster than best accuracy
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        // Setting the delegate makes iOS call locationManagerDidChangeAuthorization right away
+        // Triggers locationManagerDidChangeAuthorization right away
         manager.delegate = self
     }
 
@@ -33,12 +33,12 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             manager.requestWhenInUseAuthorization()
         case .authorizedWhenInUse, .authorizedAlways:
             isDenied = false
-            // Use a location from the last 5 minutes right away if iOS has one, otherwise ask for a new fix
+            // Reuse a location under 5 minutes old, else request one
             if let recent = manager.location, recent.timestamp.timeIntervalSinceNow > -300 {
                 location = recent
             } else {
                 isLocating = true
-                manager.requestLocation() // One-time fix, delivered to didUpdateLocations
+                manager.requestLocation() // One-time fix
             }
         case .denied, .restricted:
             isDenied = true

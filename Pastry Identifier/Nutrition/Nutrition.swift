@@ -20,12 +20,12 @@ struct NutritionRowView: View {
                 .font(.headline)
 
             if let food = food, let serving = food.servings.first {
-                // Branded numbers aren't a generic estimate, so say whose they are
+                // Show whose numbers these are
                 if let brand = food.brand {
                     Text(brand)
                         .font(.caption)
                 }
-                // First serving is the sensible default ("1 medium")
+                // Default serving, e.g. "1 medium"
                 Text(serving.description)
                     .font(.caption)
                     .padding(.bottom, 4)
@@ -62,7 +62,7 @@ struct NutritionRowView: View {
         }
     }
 
-    // One nutrient line. nil means FatSecret doesn't know it, which is not the same as 0
+    // One nutrient line; nil means unknown, not 0
     func row(_ name: String, _ value: Double?, unit: String) -> some View {
         HStack(spacing: 3) {
             Text(name)
