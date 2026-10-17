@@ -15,9 +15,28 @@
 **Pastries** is a SwiftUI iOS app for iOS 26+ that identifies pastries from a photo with an on-device CoreML model. For each result it shows the pastry's origin and history, finds nearby bakeries with MapKit, and shows nutrition data from a separate proxy server.
 
 - `Pastry Identifier/Main Views/` holds the main screen (`ContentView`), the camera wrapper, and the results sheet (`SheetComponent`).
-- `Pastry Identifier/Map/` holds the bakery search map and the selected-location sheet.
+- `Pastry Identifier/Map/` holds `MapView`, `SelectedLocationView`, `LocationManager` (permission + current location), and `SearchLogic.swift` (`BakerySearchService`, the two-pass bakery search).
 - `Pastry Identifier/Nutrition/` holds `NutritionService` (proxy call, error enum, label → food_id table) and `NutritionRowView` (the popover).
-- `Pastry Identifier/Model/` holds the `Pastry_SelectorV6` classifier and the shared model types (`Objects.swift`).
+- `Pastry Identifier/Model/` holds the `Pastry_SelectorV6` classifier and the shared data types in `Objects.swift` (`PastryFood`, `PastryServing`, `Bakery`).
+
+## Modularity — required
+
+All code must be modular. Keep each responsibility in its own file:
+
+- **Views** only lay out UI and hold UI state. No networking, search, or data-shaping logic inside a View.
+- **Services** (`NutritionService`, `BakerySearchService`) do the work. They take inputs as parameters and return results; they never reach into a View's state.
+- **Shared data types** go in `Model/Objects.swift`.
+- **System wrappers** (e.g. `LocationManager`) get their own file.
+- A View calls a service with a short function, e.g. `bakeries = await BakerySearchService().search(for: pastry?.name, near: userLocation)`.
+- New features follow the same split; put files in the matching feature folder.
+
+## Explaining changes — required
+
+After implementing something, explain it to the user:
+
+- Say **what** changed and **why** it was done that way.
+- Keep it concise: a few short points, not an essay. Over-explaining causes confusion.
+- Focus on the decisions that matter; skip obvious details.
 
 ## Conventions
 

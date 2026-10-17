@@ -13,118 +13,93 @@ struct MapView: View {
     @Environment(\.dismiss) var dismiss
     // Pastry classification used for search
     let pastry: Pastry?
-    // Location manager for requesting access
-    let location = CLLocationManager()
-    // To narrow serach
-    @State private var userZipCode: String = ""
+    // Permission + current location
+    @State private var locationManager = LocationManager()
     // Users location to display
     @State var position: MapCameraPosition = .userLocation(fallback: .automatic)
-    // Map Items (search results)
-    @State var items: [MKMapItem] = []
-    // Selected map item
-    @State var selected: MKMapItem? = nil
-    // Show selected location var
-    @State var showSelected = false
-    
-    // Check system if location services are already available
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-            
-        case .restricted, .denied:  // Location services currently unavailable.
+    // Search results, nearest first
+    @State var bakeries: [Bakery] = []
+    // Tapped marker. Also drives the sheet: closing the sheet sets this back to nil
+    @State var selected: Bakery? = nil
+    // True once the camera has zoomed out to show the first results
+    @State private var hasFitCamera = false
+    // True while the bakery search is running
+    @State private var isSearching = false
+
+    // Show the loading indicator while waiting for either the location or the search
+    var isLoading: Bool {
+        locationManager.isLocating || isSearching
+    }
+
+    // Ask the search service for bakeries around the user (see SearchLogic.swift)
+    func search() async {
+        guard let userLocation = locationManager.location else { return }
+        isSearching = true
+        bakeries = await BakerySearchService().search(for: pastry?.name, near: userLocation)
+        isSearching = false
+
+        // First load only: zoom to fit every marker. Later refreshes leave the camera where the user put it
+        if !hasFitCamera && !bakeries.isEmpty {
             position = .automatic
-            break
-            
-        case .notDetermined:        // Authorization not determined yet.
-            manager.requestWhenInUseAuthorization()
-            break
-        case .authorizedAlways, .authorizedWhenInUse:   // When authorized conduct search
-            search()
-            
-        default:
-            break
+            hasFitCamera = true
         }
     }
-    //Retrieving zip code
-    func getZipCode(){
-        CLGeocoder().reverseGeocodeLocation(location.location!) { placemarks, _ in
-                    self.userZipCode = placemarks?.first?.postalCode ?? ""
-                }
-    }
-    // Search local area for items
-    func search() {
-        let searchRequest = MKLocalSearch.Request()
-           
-           // Better query construction
-           var queryComponents = ["bakery", "cafe", userZipCode]
-            // add name of item to query components
-           if let pastryName = pastry?.name {
-               queryComponents.insert(pastryName, at: 0)
-           }
-           searchRequest.naturalLanguageQuery = queryComponents.joined(separator: " ")
-           
-           // Multiple result types if needed
-           searchRequest.resultTypes = [.pointOfInterest, .address]
-           
-           // Add POI filter for more specific results
-           searchRequest.pointOfInterestFilter = MKPointOfInterestFilter(including: [.bakery, .cafe, .restaurant])
-           
-           // Region setting with fallback
-           if let coordinate = location.location?.coordinate {
-               searchRequest.region = MKCoordinateRegion(
-                   center: coordinate,
-                   latitudinalMeters: 3000,  // More intuitive than degrees
-                   longitudinalMeters: 3000
-               )
-           }
-        
-            MKLocalSearch(request: searchRequest).start { response, _ in
-                if let response = response {
-                    self.items = response.mapItems
-                }
-            }
-        }
-    
+
     var body: some View {
         NavigationStack{
             Map(position: $position, selection: $selected){
-                // add location code - Search for nearby bakeries or cafe's that sell selected product
-                
                 // Display user location
                 UserAnnotation()
-                
-                // Display searched locations
-                ForEach(items, id: \.self) { place in
-                    
-                    Marker(place.name ?? "?", systemImage: "storefront.fill", coordinate: place.placemark.coordinate)
-                    .tint(Color(.brown))
-                    .tag(place)
-                    }
+
+                // Display searched locations. Brown = matched the pastry, gray = just a nearby bakery/cafe
+                ForEach(bakeries) { bakery in
+                    Marker(bakery.mapItem.name ?? "?", systemImage: "storefront.fill", coordinate: bakery.mapItem.location.coordinate)
+                        .tint(bakery.hasPastry ? Color(.brown) : Color(.gray))
+                        .tag(bakery)
                 }
+            }
             .toolbar {
-            // Navigate back to sheet view
-                    ToolbarItem(placement: .topBarLeading){
-                        Button(action: {
-                            dismiss()
-                        }){
-                            Image(systemName: "chevron.backward")
-                        }
+                // Navigate back to sheet view
+                ToolbarItem(placement: .topBarLeading){
+                    Button(action: {
+                        dismiss()
+                    }){
+                        Image(systemName: "chevron.backward")
                     }
-            // Search call
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            search()
-                        }) {
-                            Image(systemName: "arrow.clockwise")
-                        }
+                }
+                // Search again
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        Task { await search() }
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                    }
                 }
             }
-                
+            // Runs on appear, and again whenever the location changes (e.g. the first fix arrives)
+            .task(id: locationManager.location) {
+                await search()
             }
-            .onAppear{
-                // Request user location if needed
-                locationManagerDidChangeAuthorization(location)
-                // Conduct search 
-                search()
+            // Status message at the bottom: location off, or still loading
+            .overlay(alignment: .bottom) {
+                if locationManager.isDenied {
+                    Text("Turn on location in Settings to find bakeries near you.")
+                        .font(.subheadline)
+                        .padding()
+                        .background(.regularMaterial)
+                        .cornerRadius(16)
+                        .padding()
+                } else if isLoading {
+                    HStack {
+                        ProgressView()
+                        Text("Finding bakeries…")
+                    }
+                    .font(.subheadline)
+                    .padding()
+                    .background(.regularMaterial)
+                    .cornerRadius(16)
+                    .padding()
+                }
             }
             // All controls for map
             .mapControls(){
@@ -133,19 +108,17 @@ struct MapView: View {
                 MapPitchToggle()
                 MapScaleView()
             }
-        // Event listener for when item is selected
-            .onChange(of: selected) {
-                showSelected.toggle()
-            }
-        // Small display for selected location information
-            .sheet(isPresented: $showSelected){
-                if let selected = selected {
-                    SelectedLocationView(location: selected)
-                        .presentationDetents([.height(175)])
-                }
+            // Small display for selected location information
+            .sheet(item: $selected){ bakery in
+                SelectedLocationView(
+                    location: bakery.mapItem,
+                    note: bakery.hasPastry ? "May have \(pastry?.name ?? "this pastry")" : nil
+                )
+                .presentationDetents([.height(200)])
             }
         }
     }
+}
 
 
 #Preview {

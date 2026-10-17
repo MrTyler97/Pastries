@@ -10,7 +10,9 @@ import MapKit
 struct SelectedLocationView: View {
     @Environment(\.dismiss) var dismiss
     let location: MKMapItem
-    
+    // e.g. "May have Croissant" (nil for bakeries that only matched as "nearby")
+    var note: String? = nil
+
     var body: some View {
         VStack(spacing: 16) {
             // Drag indicator is automatic with presentationDragIndicator
@@ -27,6 +29,12 @@ struct SelectedLocationView: View {
                             .foregroundStyle(.secondary)
                     }
                     
+                    if let note = note {
+                        Label(note, systemImage: "checkmark.seal")
+                            .font(.caption)
+                            .foregroundStyle(.brown)
+                    }
+
                     if let phone = location.phoneNumber {
                         Label(phone, systemImage: "phone")
                             .font(.caption)

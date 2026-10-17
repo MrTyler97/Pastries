@@ -10,21 +10,6 @@ import CoreML
 import PhotosUI
 import Vision
 
-// Strict typing 
-struct Pastry {
-    var name: String
-    var origin: String
-    var description: String
-}
-// Create pastry data
-// Add allergens to object
-var pastries: [Pastry] = [
-    Pastry(name: "Croissant", origin: "France", description: "A buttery flaky bread named for its distinctive crescent shape. Croissants are made of a leavened variant of puff pastry. The yeast dough is layered with butter, rolled and folded several times in succession, then rolled into a sheet, a technique called laminating. Croissants have long been a staple of French bakeries and pâtisseries."),
-    Pastry(name: "Cookie", origin: "Persia", description: "A small sweet, crispy or cake like pastry most often made with flour, sugar, liquid and fat. Persia was among the first regions to cultivate sugar cane, making cakes and pastries a well known delicacy within the Persian Empire (Modern-day Iran)."),
-    Pastry(name: "Kouign Amann", origin: "France", description: "A Breton cake containing layers of butter and sugar folded in, similar in fashion to puff pastry albeit with fewer layers. The sugar caramelizes during baking. The name derives from the Breton words for cake ('kouign') and butter ('amann')."),
-    Pastry(name: "Danish", origin: "Denmark", description: "A sweet pastry, of Viennese origin, which has become a speciality of Denmark and neighboring Scandinavian countries. Called 'facturas' in Argentina and neighbouring countries"),
-    Pastry(name: "Scone", origin: "Scotland", description: "A lightly sweetened baked good traditionally made with flour, butter, sugar and milk. Scones are thought to have originated in Scotland in the early 1500s, with the first known print reference made by a Scottish poet in 1513."),
-]
 // Get Patry information
 func getPastry(name: String) -> Pastry? {
     return pastries.first { $0.name.lowercased() == name.lowercased() }
