@@ -1,5 +1,6 @@
 # Proxy API key
-Pastry Identifier/Nutrition/Secrets.swift
+Pastry Identifier/Config/secrets.xcconfig
+*.xcconfig
 
 # Claude Code project instructions
-CLAUDE.md
+Pastry Identifier/CLAUDE.md

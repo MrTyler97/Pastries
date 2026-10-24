@@ -147,8 +147,8 @@ struct ContentView: View {
                                 .frame(width: 300)
                                 .glassEffect(.clear.interactive())
                         }
-                        // A sheet in SwiftUI is a view that pops up over your current interface to present additional content or functionality. In this case the camera screen.
-                        .sheet(isPresented: $showingCamera){
+                        // Camera covers the whole screen
+                        .fullScreenCover(isPresented: $showingCamera){
                             CameraView(image: $selectedImage)
                         }
                         PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()){

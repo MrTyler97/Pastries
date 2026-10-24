@@ -32,8 +32,7 @@ struct PastryServing: Decodable {
 struct Bakery: Identifiable, Hashable {
     let id = UUID()
     let mapItem: MKMapItem
-    // True when Apple Maps matched the pastry name, not just "bakery nearby".
-    // Apple Maps has no menu data, so this means "likely has it", not "sells it".
+    // Matched the pastry name (likely has it, not confirmed)
     let hasPastry: Bool
 }
 

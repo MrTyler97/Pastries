@@ -8,16 +8,32 @@
 
 /* Begin PBXBuildFile section */
 		5F15BEA82F32401B003C5797 /* readme.md in Resources */ = {isa = PBXBuildFile; fileRef = 5F15BEA72F32400F003C5797 /* readme.md */; };
+		5F6C27883083E2C900C06843 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5F6C27873083E2C900C06843 /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		5F15BEA72F32400F003C5797 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
+		5F6C27873083E2C900C06843 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		5FA8BB3E2E7D9151005AC5BD /* Pastry Identifier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pastry Identifier.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		5F0C0F16A1B2C3D4E5F60718 /* Exceptions for "Pastry Identifier" folder in "Pastry Identifier" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				CLAUDE.md,
+				Config/secrets.xcconfig,
+			);
+			target = 5FA8BB3D2E7D9151005AC5BD /* Pastry Identifier */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5FA8BB402E7D9151005AC5BD /* Pastry Identifier */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				5F0C0F16A1B2C3D4E5F60718 /* Exceptions for "Pastry Identifier" folder in "Pastry Identifier" target */,
+			);
 			path = "Pastry Identifier";
 			sourceTree = "<group>";
 		};
@@ -40,6 +56,7 @@
 				5F15BEA72F32400F003C5797 /* readme.md */,
 				5FA8BB3F2E7D9151005AC5BD /* Products */,
 				5FA8BB402E7D9151005AC5BD /* Pastry Identifier */,
+				5F6C27873083E2C900C06843 /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
@@ -115,6 +132,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F6C27883083E2C900C06843 /* .gitignore in Resources */,
 				5F15BEA82F32401B003C5797 /* readme.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -255,6 +273,8 @@
 		};
 		5FA8BB4A2E7D9155005AC5BD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 5FA8BB402E7D9151005AC5BD /* Pastry Identifier */;
+			baseConfigurationReferenceRelativePath = Config/secrets.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -296,6 +316,8 @@
 		};
 		5FA8BB4B2E7D9155005AC5BD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 5FA8BB402E7D9151005AC5BD /* Pastry Identifier */;
+			baseConfigurationReferenceRelativePath = Config/secrets.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
