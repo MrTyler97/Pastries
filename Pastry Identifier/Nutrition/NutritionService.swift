@@ -28,8 +28,8 @@ enum NutritionError: Error {
 }
 
 struct NutritionService {
-    // Simulator can reach the Mac's localhost directly
-    let baseURL = URL(string: "http://localhost:3000")!
+    // Deployed proxy on Fly.io
+    let baseURL = URL(string: "https://proxy-restless-flower-6045.fly.dev/")!
 
     // Classifier label -> FatSecret food_id
     let foodIds: [String: String] = [
@@ -46,7 +46,7 @@ struct NutritionService {
         let url = baseURL.appending(path: "nutrition/\(foodId)")
 
         var request = URLRequest(url: url)
-        request.setValue("Bearer \(Secrets.proxyAPIKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(AppConfig.proxyAPIKey)", forHTTPHeaderField: "Authorization")
 
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let http = response as? HTTPURLResponse else { throw NutritionError.upstream }
