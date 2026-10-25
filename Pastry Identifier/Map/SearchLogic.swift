@@ -38,7 +38,11 @@ struct BakerySearchService {
         let pastryPlaces = (try? await pastryResponse)?.mapItems ?? []
         let nearbyPlaces = (try? await nearbyResponse)?.mapItems ?? []
 
-        // Merge, skipping duplicates
+        return merge(pastryPlaces: pastryPlaces, nearbyPlaces: nearbyPlaces, center: center)
+    }
+
+    // Merge both passes, skipping duplicates; split out so it can be unit tested
+    func merge(pastryPlaces: [MKMapItem], nearbyPlaces: [MKMapItem], center: CLLocation) -> [Bakery] {
         var results = pastryPlaces.map { Bakery(mapItem: $0, hasPastry: true) }
         for place in nearbyPlaces where !results.contains(where: { isSamePlace($0.mapItem, place) }) {
             results.append(Bakery(mapItem: place, hasPastry: false))
