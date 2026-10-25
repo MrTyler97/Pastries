@@ -23,4 +23,9 @@ final class PastryDataTests: XCTestCase {
             XCTAssertNotNil(foodIds[pastry.name.lowercased()], "Missing food_id for \(pastry.name)")
         }
     }
+
+    func testGetPastryIgnoresCase() {
+        XCTAssertEqual(getPastry(name: "kouign amann")?.name, "Kouign Amann")
+        XCTAssertNil(getPastry(name: "Not Applicable"))
+    }
 }

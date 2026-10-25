@@ -13,6 +13,8 @@ struct MapView: View {
     @Environment(\.dismiss) var dismiss
     // Pastry classification used for search
     let pastry: Pastry?
+    // Hidden when shown as a tab instead of a cover
+    var showsClose = true
     // Permission + current location
     @State private var locationManager = LocationManager()
     // Users location to display
@@ -77,18 +79,20 @@ struct MapView: View {
                     } else {
                         // Brown storefront for a generic bakery search
                         Marker(name, systemImage: "storefront.fill", coordinate: coordinate)
-                            .tint(bakery.hasPastry ? Color(.brown) : Color(.gray))
+                            .tint(bakery.hasPastry ? .pastryBrown : Color(.gray))
                             .tag(bakery)
                     }
                 }
             }
             .toolbar {
                 // Navigate back to sheet view
-                ToolbarItem(placement: .topBarLeading){
-                    Button(action: {
-                        dismiss()
-                    }){
-                        Image(systemName: "chevron.backward")
+                if showsClose {
+                    ToolbarItem(placement: .topBarLeading){
+                        Button(action: {
+                            dismiss()
+                        }){
+                            Image(systemName: "chevron.backward")
+                        }
                     }
                 }
                 // Search again around the user

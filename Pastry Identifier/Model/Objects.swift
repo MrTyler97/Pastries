@@ -37,10 +37,16 @@ struct Bakery: Identifiable, Hashable {
 }
 
 // Strict typing
-struct Pastry {
+struct Pastry: Identifiable {
     var name: String
     var origin: String
     var description: String
+    var id: String { name }
+}
+
+// Get Patry information
+func getPastry(name: String) -> Pastry? {
+    return pastries.first { $0.name.lowercased() == name.lowercased() }
 }
 // Create pastry data for display
 var pastries: [Pastry] = [
@@ -50,3 +56,9 @@ var pastries: [Pastry] = [
     Pastry(name: "Danish", origin: "Denmark", description: "A sweet pastry, of Viennese origin, which has become a speciality of Denmark and neighboring Scandinavian countries. Called 'facturas' in Argentina and neighbouring countries"),
     Pastry(name: "Scone", origin: "Scotland", description: "A lightly sweetened baked good traditionally made with flour, butter, sugar and milk. Scones are thought to have originated in Scotland in the early 1500s, with the first known print reference made by a Scottish poet in 1513."),
 ]
+
+// Label and confidence note from the classifier
+struct PastryClassification: Equatable {
+    let name: String
+    let note: String
+}
