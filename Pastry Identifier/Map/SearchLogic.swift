@@ -6,13 +6,14 @@
 //
 import MapKit
 
-// Finds bakeries near the user
+// Finds bakeries near a point (user or map center)
 struct BakerySearchService {
-    // How far from the user to search, in meters
-    let searchRadius: CLLocationDistance = 10000
+    // How far from the center to search, in meters
+    static let searchRadius: CLLocationDistance = 10000
+    private var searchRadius: CLLocationDistance { Self.searchRadius }
 
     // Two passes: pastry matches, then all nearby bakeries. Nearest first
-    func search(for pastryName: String?, near userLocation: CLLocation) async -> [Bakery] {
+    func search(for pastryName: String?, near center: CLLocation) async -> [Bakery] {
         let bakeriesAndCafes = MKPointOfInterestFilter(including: [.bakery, .cafe])
 
         // Pass 1: places matching the pastry name
@@ -21,13 +22,13 @@ struct BakerySearchService {
         pastryRequest.resultTypes = .pointOfInterest
         pastryRequest.pointOfInterestFilter = bakeriesAndCafes
         pastryRequest.region = MKCoordinateRegion(
-            center: userLocation.coordinate,
+            center: center.coordinate,
             latitudinalMeters: searchRadius * 2,
             longitudinalMeters: searchRadius * 2
         )
 
         // Pass 2: all bakeries and cafes nearby
-        let nearbyRequest = MKLocalPointsOfInterestRequest(center: userLocation.coordinate, radius: searchRadius)
+        let nearbyRequest = MKLocalPointsOfInterestRequest(center: center.coordinate, radius: searchRadius)
         nearbyRequest.pointOfInterestFilter = bakeriesAndCafes
 
         // Run both searches in parallel
@@ -45,8 +46,8 @@ struct BakerySearchService {
 
         // Region is only a hint: drop far places, sort nearest first
         return results
-            .filter { distance(to: $0, from: userLocation) <= searchRadius }
-            .sorted { distance(to: $0, from: userLocation) < distance(to: $1, from: userLocation) }
+            .filter { distance(to: $0, from: center) <= searchRadius }
+            .sorted { distance(to: $0, from: center) < distance(to: $1, from: center) }
     }
 
     // Match the same place across searches by Apple Maps ID
@@ -57,7 +58,7 @@ struct BakerySearchService {
         return a.name == b.name
     }
 
-    private func distance(to bakery: Bakery, from userLocation: CLLocation) -> CLLocationDistance {
-        bakery.mapItem.location.distance(from: userLocation)
+    private func distance(to bakery: Bakery, from center: CLLocation) -> CLLocationDistance {
+        bakery.mapItem.location.distance(from: center)
     }
 }

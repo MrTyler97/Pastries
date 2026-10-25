@@ -25,18 +25,32 @@ struct MapView: View {
     @State private var hasFitCamera = false
     // True while the bakery search is running
     @State private var isSearching = false
+    // Center of the last search
+    @State private var searchCenter: CLLocation?
+    // Center of the map after the user pans
+    @State private var visibleCenter: CLLocation?
+    // True once a search has finished
+    @State private var hasSearched = false
 
     // Waiting on location or search
     var isLoading: Bool {
         locationManager.isLocating || isSearching
     }
 
-    // Load bakeries around the user
-    func search() async {
-        guard let userLocation = locationManager.location else { return }
+    // Show once the map moves a quarter of the radius from the last search
+    var showSearchAreaButton: Bool {
+        guard !isSearching, let searchCenter, let visibleCenter else { return false }
+        return visibleCenter.distance(from: searchCenter) > BakerySearchService.searchRadius / 4
+    }
+
+    // Load bakeries around a point
+    func search(around center: CLLocation?) async {
+        guard let center else { return }
         isSearching = true
-        bakeries = await BakerySearchService().search(for: pastry?.name, near: userLocation)
+        searchCenter = center
+        bakeries = await BakerySearchService().search(for: pastry?.name, near: center)
         isSearching = false
+        hasSearched = true
 
         // First load only: zoom to fit all markers
         if !hasFitCamera && !bakeries.isEmpty {
@@ -51,11 +65,21 @@ struct MapView: View {
                 // Display user location
                 UserAnnotation()
 
-                // Brown = pastry match, gray = nearby bakery/cafe
+                // Pastry photo = likely match, gray = nearby bakery/cafe
                 ForEach(bakeries) { bakery in
-                    Marker(bakery.mapItem.name ?? "?", systemImage: "storefront.fill", coordinate: bakery.mapItem.location.coordinate)
-                        .tint(bakery.hasPastry ? Color(.brown) : Color(.gray))
+                    let name = bakery.mapItem.name ?? "?"
+                    let coordinate = bakery.mapItem.location.coordinate
+                    if bakery.hasPastry, let pastry {
+                        Annotation(name, coordinate: coordinate) {
+                            PastryPin(imageName: pastry.name, isSelected: selected == bakery)
+                        }
                         .tag(bakery)
+                    } else {
+                        // Brown storefront for a generic bakery search
+                        Marker(name, systemImage: "storefront.fill", coordinate: coordinate)
+                            .tint(bakery.hasPastry ? Color(.brown) : Color(.gray))
+                            .tag(bakery)
+                    }
                 }
             }
             .toolbar {
@@ -67,10 +91,10 @@ struct MapView: View {
                         Image(systemName: "chevron.backward")
                     }
                 }
-                // Search again
+                // Search again around the user
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        Task { await search() }
+                        Task { await search(around: locationManager.location) }
                     }) {
                         Image(systemName: "arrow.clockwise")
                     }
@@ -78,9 +102,29 @@ struct MapView: View {
             }
             // Runs on appear and when the location changes
             .task(id: locationManager.location) {
-                await search()
+                await search(around: locationManager.location)
             }
-            // Status: location off or loading
+            // Track where the user has panned
+            .onMapCameraChange(frequency: .onEnd) { context in
+                let center = context.region.center
+                visibleCenter = CLLocation(latitude: center.latitude, longitude: center.longitude)
+            }
+            // Search the visible area after panning
+            .overlay(alignment: .top) {
+                if showSearchAreaButton {
+                    Button(action: {
+                        Task { await search(around: visibleCenter) }
+                    }) {
+                        Label("Search this area", systemImage: "magnifyingglass")
+                            .font(.subheadline)
+                    }
+                    .buttonStyle(.glass)
+                    .padding(.top, 8)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                }
+            }
+            .animation(.easeInOut, value: showSearchAreaButton)
+            // Status: location off, loading, or no results
             .overlay(alignment: .bottom) {
                 if locationManager.isDenied {
                     Text("Turn on location in Settings to find bakeries near you.")
@@ -99,6 +143,13 @@ struct MapView: View {
                     .background(.regularMaterial)
                     .cornerRadius(16)
                     .padding()
+                } else if hasSearched && bakeries.isEmpty {
+                    Text("No bakeries found in this area")
+                        .font(.subheadline)
+                        .padding()
+                        .background(.regularMaterial)
+                        .cornerRadius(16)
+                        .padding()
                 }
             }
             // All controls for map
@@ -112,9 +163,10 @@ struct MapView: View {
             .sheet(item: $selected){ bakery in
                 SelectedLocationView(
                     location: bakery.mapItem,
-                    note: bakery.hasPastry ? "May have \(pastry?.name ?? "this pastry")" : nil
+                    hasPastry: bakery.hasPastry,
+                    pastryName: pastry?.name
                 )
-                .presentationDetents([.height(200)])
+                .presentationDetents([.height(220)])
             }
         }
     }
