@@ -123,9 +123,11 @@ struct SheetComponent: View {
                     Text(imageName)
                         .font(.headline)
                 }
-                //Confidence text
-                Text(note)
-                    .font(.system(size: 10.0))
+                //Confidence text (empty for catalog entries)
+                if !note.isEmpty {
+                    Text(note)
+                        .font(.system(size: 10.0))
+                }
                 Spacer()
             } else {
                 Spacer()
