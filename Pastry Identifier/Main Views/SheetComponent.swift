@@ -73,7 +73,6 @@ struct SheetComponent: View {
                     }
                     // Nutrition component for item (api call)
                     Button(action: {
-                        // Add code
                         showNutrition.toggle()
                     }){
                         HStack{

@@ -32,6 +32,17 @@ final class BakerySearchServiceTests: XCTestCase {
         XCTAssertEqual(results.map(\.hasPastry), [true, false])
     }
 
+    func testNoPastryMarksNothingAsMatch() {
+        let results = service.merge(
+            pastryPlaces: [place("Bakery", northBy: 0.01)],
+            nearbyPlaces: [place("Cafe", northBy: 0.02)],
+            center: center,
+            markMatches: false
+        )
+        XCTAssertEqual(results.map(\.mapItem.name), ["Bakery", "Cafe"])
+        XCTAssertEqual(results.map(\.hasPastry), [false, false])
+    }
+
     func testDuplicateKeepsPastryMatch() {
         let results = service.merge(
             pastryPlaces: [place("Same", northBy: 0.01)],

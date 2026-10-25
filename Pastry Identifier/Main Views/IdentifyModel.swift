@@ -15,8 +15,6 @@ final class IdentifyModel {
     var selectedImage: UIImage?
     // Camera cover visability
     var showingCamera = false
-    // Photo picker visability
-    var showingPicker = false
     // Result sheet viewability
     var showingResult = false
     // Classification Name
