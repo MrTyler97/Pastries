@@ -10,8 +10,10 @@ import MapKit
 struct SelectedLocationView: View {
     @Environment(\.dismiss) var dismiss
     let location: MKMapItem
-    // e.g. "May have Croissant"
-    var note: String? = nil
+    // Matched the pastry search
+    var hasPastry = false
+    // Nil for a generic bakery search
+    var pastryName: String? = nil
 
     var body: some View {
         VStack(spacing: 16) {
@@ -29,15 +31,31 @@ struct SelectedLocationView: View {
                             .foregroundStyle(.secondary)
                     }
                     
-                    if let note = note {
-                        Label(note, systemImage: "checkmark.seal")
-                            .font(.caption)
-                            .foregroundStyle(.brown)
+                    // Likely match vs. unconfirmed nearby bakery
+                    if let pastryName {
+                        if hasPastry {
+                            Label("Likely has \(pastryName)", systemImage: "checkmark.seal.fill")
+                                .font(.caption)
+                                .foregroundStyle(.brown)
+                        } else {
+                            Label("Nearby bakery: \(pastryName) not confirmed, call ahead", systemImage: "questionmark.circle")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
 
+                    // Tap to call
                     if let phone = location.phoneNumber {
-                        Label(phone, systemImage: "phone")
+                        let digits = phone.filter { $0.isNumber || $0 == "+" }
+                        if let url = URL(string: "tel:\(digits)") {
+                            Link(destination: url) {
+                                Label(phone, systemImage: "phone")
+                            }
                             .font(.caption)
+                        } else {
+                            Label(phone, systemImage: "phone")
+                                .font(.caption)
+                        }
                     }
                 }
                 
