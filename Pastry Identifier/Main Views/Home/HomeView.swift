@@ -36,7 +36,8 @@ struct HomeView: View {
             }
             .sheet(isPresented: $infoShowing) {
                 PastryInfoView()
-                    .presentationDetents([.medium])
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
             }
             // Catalog details reuse the result sheet
             .sheet(item: $selectedPastry) { pastry in
