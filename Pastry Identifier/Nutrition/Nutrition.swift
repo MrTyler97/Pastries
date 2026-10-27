@@ -38,6 +38,8 @@ struct NutritionRowView: View {
                 row("Fiber", serving.fiber, unit: "g")
                 row("Cholesterol", serving.cholesterol, unit: "mg")
                 row("Sodium", serving.sodium, unit: "mg")
+                FatSecretAttribution()
+                    .padding(.top, 6)
             } else if let errorMessage = errorMessage {
                 Text(errorMessage)
                     .foregroundColor(.secondary)

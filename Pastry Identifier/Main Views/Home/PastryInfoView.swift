@@ -28,7 +28,7 @@ struct PastryInfoView: View {
                             symbol: "list.bullet.rectangle",
                             tint: .green,
                             title: "Nutrition",
-                            text: "Tap the nutrition button on a result to see calories, macros, sugar and sodium for a typical serving, from FatSecret. Values are estimates and vary by bakery and recipe."
+                            text: "Tap the nutrition button on a result to see calories, macros, sugar and sodium for a typical serving, from fatsecret. Values are estimates and vary by bakery and recipe."
                         )
                         InfoRow(
                             symbol: "exclamationmark.bubble.fill",
@@ -42,6 +42,7 @@ struct PastryInfoView: View {
                             title: "Find bakeries",
                             text: "See nearby bakeries that may carry the pastry."
                         )
+                        FatSecretAttribution()
                     }
                     noteCard
                 }

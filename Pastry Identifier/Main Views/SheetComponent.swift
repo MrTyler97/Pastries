@@ -67,6 +67,7 @@ struct SheetComponent: View {
                                 Text("Yeast")
                             }
                             .padding()
+                            FatSecretAttribution()
                         }
                         .padding()
                         .presentationCompactAdaptation(.popover)
