@@ -64,9 +64,9 @@ struct CameraView: View {
     // Helps center the pastry
     var frameGuide: some View {
         VStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 30)
-                .stroke(.white.opacity(0.7), lineWidth: 2)
-                .frame(width: 280, height: 280)
+            CornerBrackets()
+                .stroke(.white, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                .frame(width: 320, height: 320)
             Text("Center the pastry")
                 .font(.subheadline)
                 .foregroundStyle(.white.opacity(0.8))
