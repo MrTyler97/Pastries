@@ -37,13 +37,13 @@ struct PastryClassifier {
     // Logic for classification displayed
     static func result(for identifier: String, confidence: Float) -> PastryClassification {
         if identifier == "Other" {
-            return PastryClassification(name: "Not Applicable", note: "Image not within classification scope")
+            return PastryClassification(name: "Not Applicable", note: "Image not within classification scope.")
         } else if confidence > 0.90 {
-            return PastryClassification(name: identifier, note: "High Confidence")
+            return PastryClassification(name: identifier, note: "High Confidence.")
         } else if confidence > 0.55 {
-            return PastryClassification(name: identifier, note: "Low Confidence - may be misclassified")
+            return PastryClassification(name: identifier, note: "Low Confidence. May be misclassified")
         } else {
-            return PastryClassification(name: "Unclassified", note: "Very Low Confidence - try different angle")
+            return PastryClassification(name: "Unclassified", note: "Very Low Confidence. Try different angle")
         }
     }
 }
