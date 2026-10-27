@@ -43,7 +43,7 @@ struct HomeView: View {
             .sheet(item: $selectedPastry) { pastry in
                 SheetComponent(imageName: pastry.name, note: "", pastry: pastry)
                     .presentationDetents([.height(650), .large])
-                    .presentationDragIndicator(.hidden)
+                    .presentationDragIndicator(.visible)
             }
         }
     }

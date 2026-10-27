@@ -64,7 +64,7 @@ struct RootTabView: View {
                 .presentationDetents(
                     (identify.imageName == "Not Applicable" || identify.imageName == "Unclassified") ? [.height(300)] : [.height(650), .large]
                 )
-                .presentationDragIndicator(.hidden)
+                .presentationDragIndicator(identify.imageName == "Not Applicable" || identify.imageName == "Unclassified" ? .hidden : .visible)
         }
     }
 }
