@@ -9,7 +9,7 @@ import MapKit
 // Finds bakeries near a point (user or map center)
 struct BakerySearchService {
     // How far from the center to search, in meters
-    static let searchRadius: CLLocationDistance = 10000
+    static let searchRadius: CLLocationDistance = 2500
     private var searchRadius: CLLocationDistance { Self.searchRadius }
 
     // Two passes: pastry matches, then all nearby bakeries. Nearest first
