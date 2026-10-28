@@ -39,6 +39,51 @@ final class NutritionServiceTests: XCTestCase {
         XCTAssertNil(serving.cholesterol)
     }
 
+    func testDecodesAllergensWithUnknownValues() throws {
+        let json = """
+        {"foodId": "3533", "name": "Croissant", "servings": [],
+         "allergens": [{"name": "Milk", "value": true}, {"name": "Fish", "value": false},
+                       {"name": "Nuts", "value": null}],
+         "dietaryPreferences": [{"name": "Vegan", "value": false}]}
+        """
+        let food = try JSONDecoder().decode(PastryFood.self, from: Data(json.utf8))
+        let allergens = try XCTUnwrap(food.allergens)
+        // Look up by name; order isn't guaranteed
+        XCTAssertEqual(allergens.first { $0.name == "Milk" }?.value, true)
+        XCTAssertEqual(allergens.first { $0.name == "Fish" }?.value, false)
+        let nuts = try XCTUnwrap(allergens.first { $0.name == "Nuts" })
+        XCTAssertNil(nuts.value)
+        XCTAssertEqual(food.dietaryPreferences?.first?.value, false)
+    }
+
+    func testMissingAllergenKeysDecodeAsNil() throws {
+        let json = """
+        {"foodId": "3936", "name": "Cookie", "servings": []}
+        """
+        let food = try JSONDecoder().decode(PastryFood.self, from: Data(json.utf8))
+        XCTAssertNil(food.allergens)
+        XCTAssertNil(food.dietaryPreferences)
+    }
+
+    func testTrueNamesKeepsOnlyContainedSorted() {
+        let attributes = [
+            FoodAttribute(name: "Soy", value: false),
+            FoodAttribute(name: "Nuts", value: nil),
+            FoodAttribute(name: "Milk", value: true),
+            FoodAttribute(name: "Eggs", value: true),
+        ]
+        XCTAssertEqual(attributes.trueNames(), ["Eggs", "Milk"])
+        XCTAssertTrue(attributes.hasUnknown)
+    }
+
+    func testNoUnknownWhenAllValuesKnown() {
+        let attributes = [
+            FoodAttribute(name: "Milk", value: true),
+            FoodAttribute(name: "Fish", value: false),
+        ]
+        XCTAssertFalse(attributes.hasUnknown)
+    }
+
     func testMissingRequiredFieldFailsToDecode() {
         // No calories
         let json = """

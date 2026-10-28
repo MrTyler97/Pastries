@@ -14,6 +14,9 @@ struct SheetActionBar: View {
     @State private var showMap = false
     @State private var showAllergens = false
     @State private var showNutrition = false
+    // One proxy call per sheet, shared by both popovers
+    @State private var food: PastryFood?
+    @State private var errorMessage: String?
 
     var body: some View {
         HStack(spacing: 12) {
@@ -24,34 +27,39 @@ struct SheetActionBar: View {
                 MapView(pastry: pastry)
             }
 
-            SheetActionButton(title: "Allergens", symbol: "exclamationmark.bubble.fill", tint: .red) {
+            SheetActionButton(title: "Sensitivities", symbol: "fork.knife.circle", tint: .orange) {
                 showAllergens.toggle()
             }
             .popover(isPresented: $showAllergens) {
-                VStack {
-                    Text("May Contain")
-                        .font(.headline)
-                    HStack {
-                        Text("Dairy")
-                        Text("Gluten")
-                        Text("Nuts")
-                        Text("Yeast")
-                    }
+                AllergenView(food: $food, errorMessage: $errorMessage)
+                    .presentationCompactAdaptation(.popover)
                     .padding()
-                    FatSecretAttribution()
-                }
-                .padding()
-                .presentationCompactAdaptation(.popover)
             }
 
             SheetActionButton(title: "Nutrition", symbol: "list.bullet.rectangle", tint: .green) {
                 showNutrition.toggle()
             }
             .popover(isPresented: $showNutrition) {
-                NutritionRowView(classLabel: classLabel)
+                NutritionRowView(food: $food, errorMessage: $errorMessage)
                     .presentationCompactAdaptation(.popover)
                     .padding()
             }
+        }
+        // Starts when the sheet appears, so data is usually ready before a tap
+        .task { await load() }
+    }
+
+    // Fetch food data once; popovers show a spinner until it lands
+    func load() async {
+        do {
+            food = try await NutritionService().food(forClassLabel: classLabel)
+        } catch let error as NutritionError {
+            print("Nutrition error: \(error)")
+            errorMessage = error.message
+        } catch {
+            // Network failure, e.g. proxy not running
+            print("Nutrition error: \(error)")
+            errorMessage = "Couldn't reach nutrition server"
         }
     }
 }
