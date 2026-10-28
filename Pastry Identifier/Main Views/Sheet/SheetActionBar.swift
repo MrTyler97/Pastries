@@ -24,24 +24,13 @@ struct SheetActionBar: View {
                 MapView(pastry: pastry)
             }
 
-            SheetActionButton(title: "Allergens", symbol: "exclamationmark.bubble.fill", tint: .red) {
+            SheetActionButton(title: "Sensitivities", symbol: "fork.knife.circle", tint: .orange) {
                 showAllergens.toggle()
             }
             .popover(isPresented: $showAllergens) {
-                VStack {
-                    Text("May Contain")
-                        .font(.headline)
-                    HStack {
-                        Text("Dairy")
-                        Text("Gluten")
-                        Text("Nuts")
-                        Text("Yeast")
-                    }
+                AllergenView(classLabel: classLabel)
+                    .presentationCompactAdaptation(.popover)
                     .padding()
-                    FatSecretAttribution()
-                }
-                .padding()
-                .presentationCompactAdaptation(.popover)
             }
 
             SheetActionButton(title: "Nutrition", symbol: "list.bullet.rectangle", tint: .green) {

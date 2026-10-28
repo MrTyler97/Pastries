@@ -40,9 +40,13 @@ struct NutritionService {
         "danish": "4212",
     ]
 
+    // Responses this launch, keyed by foodId; shared by the allergen and nutrition popovers
+    static var cache: [String: PastryFood] = [:]
+
     func food(forClassLabel label: String) async throws -> PastryFood {
         // Build the URL: /nutrition/:foodId
         guard let foodId = foodIds[label.lowercased()] else { throw NutritionError.notFound }
+        if let cached = Self.cache[foodId] { return cached }
         let url = baseURL.appending(path: "nutrition/\(foodId)")
 
         var request = URLRequest(url: url)
@@ -69,7 +73,9 @@ struct NutritionService {
         }
 
         do {
-            return try JSONDecoder().decode(PastryFood.self, from: data)
+            let food = try JSONDecoder().decode(PastryFood.self, from: data)
+            Self.cache[foodId] = food
+            return food
         } catch {
             throw NutritionError.decoding(error)
         }

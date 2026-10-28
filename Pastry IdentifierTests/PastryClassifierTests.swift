@@ -16,13 +16,13 @@ final class PastryClassifierTests: XCTestCase {
 
     func testHighConfidence() {
         let result = PastryClassifier.result(for: "Croissant", confidence: 0.95)
-        XCTAssertEqual(result, PastryClassification(name: "Croissant", note: "High Confidence"))
+        XCTAssertEqual(result, PastryClassification(name: "Croissant", note: "High Confidence."))
     }
 
     func testLowConfidence() {
         let result = PastryClassifier.result(for: "Scone", confidence: 0.7)
         XCTAssertEqual(result.name, "Scone")
-        XCTAssertEqual(result.note, "Low Confidence - may be misclassified")
+        XCTAssertEqual(result.note, "Low Confidence. May be misclassified")
     }
 
     func testVeryLowConfidenceIsUnclassified() {
