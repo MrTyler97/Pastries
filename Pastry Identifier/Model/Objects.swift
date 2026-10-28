@@ -15,6 +15,19 @@ struct PastryFood: Decodable {
     let dietaryPreferences: [FoodAttribute]?
 }
 
+// Sample proxy response for previews
+extension PastryFood {
+    static let sample = PastryFood(
+        foodId: "3533", name: "Croissant", brand: nil,
+        servings: [PastryServing(servingId: "1", description: "1 medium", grams: 57, calories: 231,
+                                 carbs: 26.1, protein: 4.7, fat: 12, saturatedFat: 6.6, sugar: 6.4,
+                                 fiber: 1.5, sodium: 424, cholesterol: 38)],
+        allergens: [FoodAttribute(name: "Milk", value: true), FoodAttribute(name: "Gluten", value: true),
+                    FoodAttribute(name: "Nuts", value: nil)],
+        dietaryPreferences: [FoodAttribute(name: "Vegetarian", value: true)]
+    )
+}
+
 // An allergen or diet flag; nil value means unknown, not "free of"
 struct FoodAttribute: Decodable {
     let name: String

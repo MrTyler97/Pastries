@@ -8,11 +8,9 @@
 import SwiftUI
 
 struct AllergenView: View {
-    // Classification name, e.g. "Croissant"
-    let classLabel: String
-
-    @State private var food: PastryFood?
-    @State private var errorMessage: String?
+    // Bound to SheetActionBar's state so the popover updates when the load finishes
+    @Binding var food: PastryFood?
+    @Binding var errorMessage: String?
 
     var body: some View {
         VStack(spacing: 10) {
@@ -32,19 +30,6 @@ struct AllergenView: View {
             }
         }
         .frame(minWidth: 250)
-        // Runs when the popover appears
-        .task {
-            do {
-                food = try await NutritionService().food(forClassLabel: classLabel)
-            } catch let error as NutritionError {
-                print("Allergen error: \(error)")
-                errorMessage = error.message
-            } catch {
-                // Network failure, e.g. proxy not running
-                print("Allergen error: \(error)")
-                errorMessage = "Couldn't reach nutrition server"
-            }
-        }
     }
 
     // Red chips for allergens, green for diets it fits, then a safety note
@@ -98,6 +83,12 @@ struct AllergenView: View {
     }
 }
 
-#Preview {
-    AllergenView(classLabel: "Croissant")
+#Preview("Loaded") {
+    AllergenView(food: .constant(.sample), errorMessage: .constant(nil))
+        .padding()
+}
+
+#Preview("Loading") {
+    AllergenView(food: .constant(nil), errorMessage: .constant(nil))
+        .padding()
 }

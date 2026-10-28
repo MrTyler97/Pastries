@@ -7,11 +7,9 @@
 import SwiftUI
 
 struct NutritionRowView: View {
-    // Classification name, e.g. "Croissant"
-    let classLabel: String
-
-    @State private var food: PastryFood?
-    @State private var errorMessage: String?
+    // Bound to SheetActionBar's state so the popover updates when the load finishes
+    @Binding var food: PastryFood?
+    @Binding var errorMessage: String?
 
     var body: some View {
         VStack() {
@@ -49,19 +47,6 @@ struct NutritionRowView: View {
             }
         }
         .frame(minWidth: 250)
-        // Runs when the popover appears
-        .task {
-            do {
-                food = try await NutritionService().food(forClassLabel: classLabel)
-            } catch let error as NutritionError {
-                print("Nutrition error: \(error)")
-                errorMessage = error.message
-            } catch {
-                // Network failure, e.g. proxy not running
-                print("Nutrition error: \(error)")
-                errorMessage = "Couldn't reach nutrition server"
-            }
-        }
     }
 
     // One nutrient line; nil means unknown, not 0
@@ -80,6 +65,12 @@ struct NutritionRowView: View {
     }
 }
 
-#Preview {
-    NutritionRowView(classLabel: "Croissant")
+#Preview("Loaded") {
+    NutritionRowView(food: .constant(.sample), errorMessage: .constant(nil))
+        .padding()
+}
+
+#Preview("Loading") {
+    NutritionRowView(food: .constant(nil), errorMessage: .constant(nil))
+        .padding()
 }
