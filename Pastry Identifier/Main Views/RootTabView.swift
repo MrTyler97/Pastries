@@ -59,10 +59,12 @@ struct RootTabView: View {
         }
         // Result opens over whichever tab is showing
         .sheet(isPresented: $identify.showingResult) {
-            SheetComponent(imageName: identify.imageName, note: identify.note, pastry: getPastry(name: identify.imageName))
+            SheetComponent(imageName: identify.imageName, note: identify.note, pastry: getPastry(name: identify.imageName), capturedImage: identify.selectedImage)
+                // Solid background so the photo header fades cleanly
+                .presentationBackground(Color(.systemBackground))
             // Allows sheet to load halfway intially with the option to enlarge
                 .presentationDetents(
-                    (identify.imageName == "Not Applicable" || identify.imageName == "Unclassified") ? [.height(300)] : [.height(650), .large]
+                    (identify.imageName == "Not Applicable" || identify.imageName == "Unclassified") ? [.height(300)] : [.medium, .large]
                 )
                 .presentationDragIndicator(identify.imageName == "Not Applicable" || identify.imageName == "Unclassified" ? .hidden : .visible)
         }
