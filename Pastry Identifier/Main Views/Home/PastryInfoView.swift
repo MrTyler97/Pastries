@@ -22,19 +22,19 @@ struct PastryInfoView: View {
                             symbol: "camera.fill",
                             tint: .pastryBrown,
                             title: "Identify",
-                            text: "Snap or choose a photo. The on-device model recognizes a small set of pastries, with more coming soon."
+                            text: "Snap or choose a photo. Our model recognizes a small set of pastries, with more coming soon."
                         )
                         InfoRow(
                             symbol: "list.bullet.rectangle",
                             tint: .green,
                             title: "Nutrition",
-                            text: "Tap the nutrition button on a result to see calories, macros, sugar and sodium for a typical serving, from fatsecret. Values are estimates and vary by bakery and recipe."
+                            text: "Tap the nutrition button on a result to see calories, macros, sugar and sodium for a typical serving. Values are estimates and vary by bakery and recipe."
                         )
                         InfoRow(
                             symbol: "fork.knife.circle",
                             tint: .orange,
                             title: "Sensitives",
-                            text: "The allergen button lists common ingredients such as dairy, gluten, nuts and yeast. It is general guidance, not a guarantee. Always ask the bakery if you have an allergy."
+                            text: "The sensitives button lists common ingredients such as dairy, gluten, nuts and yeast. It is general guidance, not a guarantee. Always ask the bakery if you have an allergy."
                         )
                         InfoRow(
                             symbol: "location.magnifyingglass",
